@@ -4,7 +4,7 @@ import { NextResponse, NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
-    await signOut();
+    await signOut({ redirect: false });
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {

@@ -4,11 +4,8 @@ import * as z from "zod";
 import { AuthError } from "next-auth";
 
 import { LoginSchema } from "@/schemas";
-import { signIn, auth } from "@/auth";
-import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
-// import { generateVerificationToken } from "@/lib/tokens";
+import { signIn } from "@/auth";
 import { getUserByEmail } from "@/data/user";
-// import { sendVerificationEmail } from "@/lib/mail";
 
 export const login = async (
   credentials: z.infer<typeof LoginSchema>,
@@ -30,10 +27,10 @@ export const login = async (
     await signIn("credentials", {
       email,
       password,
+      redirect: !!redirectTo,
       redirectTo,
     });
   } catch (error) {
-    // console.log(error);
     if (error instanceof AuthError) {
       switch (error.type) {
         case "CredentialsSignin":
