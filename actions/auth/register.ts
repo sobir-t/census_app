@@ -5,8 +5,11 @@ import bcrypt from "bcryptjs";
 
 import { RegisterSchema } from "@/schemas";
 import { getUserByEmail, saveNewUser } from "@/data/user";
+import { User } from "@prisma/client";
 
-export const register = async (values: z.infer<typeof RegisterSchema>) => {
+export const register = async (
+  values: z.infer<typeof RegisterSchema>
+): Promise<{ success?: string; user?: User; error?: string; data?: any; db_error?: string }> => {
   const validatedFields = RegisterSchema.safeParse(values);
 
   console.log(JSON.stringify(validatedFields.error?.errors, null, 2));

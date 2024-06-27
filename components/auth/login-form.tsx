@@ -14,11 +14,13 @@ import { Button } from "../ui/button";
 import { FormSuccess } from "../form-success";
 import { FormError } from "../form-error";
 import axios from "axios";
+import { login } from "@/actions/auth/login";
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 
 export const LoginForm = () => {
   const [isPending, startTransition] = useTransition();
-  const [error, setError] = useState();
-  const [success, setSuccess] = useState();
+  const [error, setError] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -28,11 +30,13 @@ export const LoginForm = () => {
   });
 
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+    setError("");
+    setSuccess("");
     startTransition(() => {
-      axios({
-        method: "post",
-        url: 
-      })
+      login(values, DEFAULT_LOGIN_REDIRECT).then((data) => {
+        setError(data?.error);
+        setSuccess(data?.success);
+      });
     });
   };
 
@@ -68,8 +72,8 @@ export const LoginForm = () => {
               )}
             />
           </div>
-          <FormSuccess message="" />
-          <FormError message="" />
+          <FormError message={error} />
+          <FormSuccess message={success} />
           <Button type="submit" id="login-button" className="login-button btn w-full" disabled={isPending}>
             Login
           </Button>
