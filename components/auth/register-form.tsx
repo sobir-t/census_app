@@ -11,7 +11,8 @@ import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { CardWrapper } from "@/components/auth/card-wrapper";
-import { register } from "@/actions/auth/register";
+import { register } from "@/actions/auth";
+import Link from "next/link";
 
 export const RegisterForm = () => {
   const [error, setError] = useState<string | undefined>("");
@@ -84,9 +85,15 @@ export const RegisterForm = () => {
           </div>
           <FormError message={error} />
           <FormSuccess message={success} />
-          <Button name="sign-up-button" type="submit" className="w-full" disabled={isPending}>
-            Sign up
-          </Button>
+          {success ? (
+            <Button name="login-button btn" className="w-full" disabled={isPending}>
+              <Link href="/auth/login">Login</Link>
+            </Button>
+          ) : (
+            <Button name="sign-up-button" type="submit" className="w-full" disabled={isPending}>
+              Sign up
+            </Button>
+          )}
         </form>
       </Form>
     </CardWrapper>

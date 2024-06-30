@@ -1,3 +1,5 @@
+// /api/users/id/[id]
+
 import { getUserById } from "@/data/user";
 import { NextResponse } from "next/server";
 

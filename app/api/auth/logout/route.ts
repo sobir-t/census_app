@@ -1,3 +1,5 @@
+// /api/auth/logout
+
 import { signOut } from "@/auth";
 import { AuthError } from "next-auth";
 import { NextResponse, NextRequest } from "next/server";
