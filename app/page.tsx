@@ -1,6 +1,4 @@
-import { LoginButton } from "@/components/auth/login-button";
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
+// /
 
 export default function Home() {
   return (
@@ -10,11 +8,12 @@ export default function Home() {
         <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Welcome to Census Registration</h2>
       </div>
       <div className="sm:mx-auto sm:w-full sm:max-w-sm space-y-6">
-        <LoginButton>
-          <Button variant="default" size="lg" className="mt-10 flex w-full justify-center px-3 py-1.5 leading-6">
-            Login
-          </Button>
-        </LoginButton>
+        <p>This app is intended to be used by Quality Assurance Engineers for software testing training</p>
+        <p>Author has no respocibility for any official or commertial usage</p>
+        <p>You are using this app at your own risk</p>
+        <p>Please DO NOT save any PII (Personal Identifiebla information)</p>
+        <p>All information has to be of unreal people</p>
+        <p>This app has no any security protection for any information submitted</p>
       </div>
     </div>
   );

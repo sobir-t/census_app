@@ -9,12 +9,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema } from "@/schemas";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { CardWrapper } from "@/components/auth/card-wrapper";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import { FormSuccess } from "../form-success";
-import { FormError } from "../form-error";
-import axios from "axios";
-import { login } from "@/actions/auth/login";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { FormSuccess } from "@/components/form-success";
+import { FormError } from "@/components/form-error";
+import { login } from "@/actions/auth";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 
 export const LoginForm = () => {
