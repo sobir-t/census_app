@@ -18,13 +18,29 @@ export const getUserById = async (id: number) => {
   }
 };
 
-export const saveNewUser = async ({ name, email, password }: { name: string; email: string; password: string }) => {
+const getRandomProfileImage = () => {
+  const r: number = Math.floor(Math.random() * 13);
+  return `/images/${r}.avif`;
+};
+
+export const saveNewUser = async ({
+  name,
+  email,
+  password,
+  image = getRandomProfileImage(),
+}: {
+  name: string;
+  email: string;
+  password: string;
+  image?: string;
+}) => {
   try {
     const user = await db.user.create({
       data: {
         name,
         email,
         password,
+        image,
       },
     });
     return { user };

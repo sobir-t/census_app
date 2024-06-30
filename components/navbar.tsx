@@ -42,7 +42,7 @@ export default function Navbar({ user }: { user: User | undefined }) {
       ];
     else navigation = [{ name: "Dashboard", href: "/dashboard", current: pathname == "/dashboard" }, ...navigation];
     profile = {
-      src: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      src: user.image || "/account.svg",
       menueItems: [
         {
           text: "You profile",
@@ -60,7 +60,7 @@ export default function Navbar({ user }: { user: User | undefined }) {
     };
   } else {
     profile = {
-      src: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      src: "/account.svg",
       menueItems: [
         {
           text: "Sign in",
@@ -132,6 +132,7 @@ export default function Navbar({ user }: { user: User | undefined }) {
                     >
                       <span className="absolute -inset-1.5" />
                       <span className="sr-only">Open user menu</span>
+                      {/* <Image className="h-8 w-8 rounded-full object-cover" src={profile.src} alt="" width="8" height="8" /> */}
                       <img className="h-8 w-8 rounded-full" src={profile.src} alt="" />
                     </MenuButton>
                   </div>
