@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 
-export const getUserByEmail = async (email: string) => {
+export const dbGetUserByEmail = async (email: string) => {
   try {
     const user = await db.user.findUnique({ where: { email } });
     return user;
@@ -9,7 +9,7 @@ export const getUserByEmail = async (email: string) => {
   }
 };
 
-export const getUserById = async (id: number) => {
+export const dbGetUserById = async (id: number) => {
   try {
     const user = await db.user.findUnique({ where: { id } });
     return user;
@@ -18,22 +18,7 @@ export const getUserById = async (id: number) => {
   }
 };
 
-const getRandomProfileImage = () => {
-  const r: number = Math.floor(Math.random() * 13);
-  return `/images/${r}.avif`;
-};
-
-export const saveNewUser = async ({
-  name,
-  email,
-  password,
-  image = getRandomProfileImage(),
-}: {
-  name: string;
-  email: string;
-  password: string;
-  image?: string;
-}) => {
+export const dbSaveNewUser = async ({ name, email, password, image }: { name: string; email: string; password: string; image: string }) => {
   try {
     const user = await db.user.create({
       data: {
@@ -41,6 +26,36 @@ export const saveNewUser = async ({
         email,
         password,
         image,
+      },
+    });
+    return { user };
+  } catch (e: any) {
+    return { db_error: e.message };
+  }
+};
+
+export const dbUpdateUser = async ({ id, name, email, image }: { id: number; name?: string; email?: string; image?: string }) => {
+  try {
+    const user = await db.user.update({
+      where: { id },
+      data: {
+        name,
+        email,
+        image,
+      },
+    });
+    return { user };
+  } catch (e: any) {
+    return { db_error: e.message };
+  }
+};
+
+export const dbUpdatePassword = async ({ id, password }: { id: number; password: string }) => {
+  try {
+    const user = await db.user.update({
+      where: { id },
+      data: {
+        password,
       },
     });
     return { user };

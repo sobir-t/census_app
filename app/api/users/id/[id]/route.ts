@@ -1,11 +1,11 @@
 // /api/users/id/[id]
 
-import { getUserById } from "@/data/user";
+import { dbGetUserById } from "@/data/user";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   const id = parseInt(params.id);
-  const user = await getUserById(id);
+  const user = await dbGetUserById(id);
   if (user) return NextResponse.json({ success: "Found requested user", user }, { status: 200 });
   else NextResponse.json({ error: `No user found by id = '${id}` }, { status: 404 });
 }

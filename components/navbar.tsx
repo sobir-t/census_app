@@ -2,6 +2,7 @@
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { User } from "next-auth";
+import { signOut } from "next-auth/react";
 
 import { usePathname } from "next/navigation";
 
@@ -17,9 +18,10 @@ interface NavigationProps {
 
 interface ProfileProps {
   src: string;
-  menueItems: {
+  menuItems: {
     text: string;
     href: string;
+    onclick?: () => {} | void;
   }[];
 }
 
@@ -43,10 +45,10 @@ export default function Navbar({ user }: { user: User | undefined }) {
     else navigation = [{ name: "Dashboard", href: "/dashboard", current: pathname == "/dashboard" }, ...navigation];
     profile = {
       src: user.image || "/account.svg",
-      menueItems: [
+      menuItems: [
         {
           text: "You profile",
-          href: "#",
+          href: "/profile",
         },
         {
           text: "Settings",
@@ -54,14 +56,17 @@ export default function Navbar({ user }: { user: User | undefined }) {
         },
         {
           text: "Sign out",
-          href: "/api/auth/signout",
+          href: "#",
+          onclick: () => {
+            signOut();
+          },
         },
       ],
     };
   } else {
     profile = {
       src: "/account.svg",
-      menueItems: [
+      menuItems: [
         {
           text: "Sign in",
           href: "/auth/login",
@@ -83,7 +88,7 @@ export default function Navbar({ user }: { user: User | undefined }) {
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                 {/* Mobile menu button*/}
                 <DisclosureButton
-                  id="nav-menue-button"
+                  id="nav-menu-button"
                   className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
                 >
                   <span className="absolute -inset-0.5" />
@@ -127,7 +132,7 @@ export default function Navbar({ user }: { user: User | undefined }) {
                 <Menu as="div" className="relative ml-3">
                   <div>
                     <MenuButton
-                      id="user-menue-button"
+                      id="user-menu-button"
                       className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                     >
                       <span className="absolute -inset-1.5" />
@@ -138,12 +143,18 @@ export default function Navbar({ user }: { user: User | undefined }) {
                   </div>
                   <MenuItems
                     transition
-                    className="user-menue-items absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                    className="user-menu-item absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
                   >
-                    {profile.menueItems.map((item) => (
+                    {profile.menuItems.map((item) => (
                       <MenuItem key={item.text}>
                         {({ focus }) => (
-                          <a href={item.href} className={classNames(focus ? "bg-gray-100" : "", "block px-4 py-2 text-sm text-gray-700")}>
+                          <a
+                            href={item.href}
+                            className={classNames(focus ? "bg-gray-100" : "", "block px-4 py-2 text-sm text-gray-700")}
+                            onClick={() => {
+                              if (item.onclick) item.onclick();
+                            }}
+                          >
                             {item.text}
                           </a>
                         )}
@@ -156,7 +167,7 @@ export default function Navbar({ user }: { user: User | undefined }) {
           </div>
 
           <DisclosurePanel className="sm:hidden">
-            <div className="nav-menue-items space-y-1 px-2 pb-3 pt-2">
+            <div className="nav-menu-item space-y-1 px-2 pb-3 pt-2">
               {navigation.map((item) => (
                 <DisclosureButton
                   key={item.name}

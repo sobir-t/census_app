@@ -1,14 +1,15 @@
-import NextAuth from "next-auth";
+import NextAuth, { User } from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { db } from "@/lib/db";
 import authConfig from "@/auth.config";
-import { getUserById } from "@/data/user";
+import { dbGetUserById } from "@/data/user";
 
 export const {
   handlers: { GET, POST },
   auth,
   signIn,
   signOut,
+  unstable_update,
 } = NextAuth({
   pages: {
     signIn: "/auth/login",
@@ -24,7 +25,7 @@ export const {
   },
   callbacks: {
     async signIn({ user }) {
-      const existingUser = user.id ? await getUserById(parseInt(user.id)) : null;
+      const existingUser = user.id ? await dbGetUserById(parseInt(user.id)) : null;
       if (!existingUser) return false;
       return true;
     },
@@ -34,10 +35,16 @@ export const {
       // console.log(JSON.stringify(session, null, 2));
       return session;
     },
-    async jwt({ token }) {
+    async jwt({ token, trigger, session }) {
       if (!token.sub) return token;
-      const existingUser = await getUserById(parseInt(token.sub));
+      const existingUser = await dbGetUserById(parseInt(token.sub));
       if (!existingUser) return token;
+      if (trigger === "update" && session) {
+        const { name, email, image } = session;
+        if (name) token.name = name;
+        if (email) token.email = email;
+        if (image) token.picture = image;
+      }
       token.role = existingUser.role;
       return token;
     },

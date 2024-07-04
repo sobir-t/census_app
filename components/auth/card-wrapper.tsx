@@ -7,8 +7,8 @@ import { BackButton } from "./back-button";
 interface CardWrapperProps {
   children: React.ReactNode;
   headerLabel: string;
-  backButtonLabel: string;
-  backButtonHref: string;
+  backButtonLabel?: string;
+  backButtonHref?: string;
 }
 
 export const CardWrapper = ({ children, headerLabel, backButtonLabel, backButtonHref }: CardWrapperProps) => {
@@ -18,9 +18,11 @@ export const CardWrapper = ({ children, headerLabel, backButtonLabel, backButton
         <Header label={headerLabel}></Header>
       </CardHeader>
       <CardContent>{children}</CardContent>
-      <CardFooter className="w-full flex justify-center items-center">
-        <BackButton href={backButtonHref} label={backButtonLabel}></BackButton>
-      </CardFooter>
+      {backButtonLabel && backButtonHref ? (
+        <CardFooter className="w-full flex justify-center items-center">
+          <BackButton href={backButtonHref} label={backButtonLabel}></BackButton>
+        </CardFooter>
+      ) : null}
     </Card>
   );
 };

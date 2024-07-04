@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { isAdmin } from "@/actions/auth";
 import Navbar from "@/components/navbar";
 import { auth } from "@/auth";
+import { SessionProvider } from "next-auth/react";
+import { cookies } from "next/headers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,14 +18,17 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  cookies();
   const user = (await auth())?.user || undefined;
 
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <Navbar user={user} />
-        {children}
-      </body>
-    </html>
+    <SessionProvider>
+      <html lang="en">
+        <body className={inter.className}>
+          <Navbar user={user} />
+          {children}
+        </body>
+      </html>
+    </SessionProvider>
   );
 }

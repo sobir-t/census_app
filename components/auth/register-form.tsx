@@ -4,7 +4,7 @@ import * as z from "zod";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RegisterSchema } from "@/schemas";
+import { RegisterUserSchema } from "@/schemas";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { FormError } from "@/components/form-error";
@@ -14,23 +14,35 @@ import { CardWrapper } from "@/components/auth/card-wrapper";
 import { register } from "@/actions/auth";
 import Link from "next/link";
 
+import { AvatarDialog } from "@/components/auth/avatar-dialog";
+import { avatarLinks } from "@/lib/avatars";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 export const RegisterForm = () => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
-  const form = useForm<z.infer<typeof RegisterSchema>>({
-    resolver: zodResolver(RegisterSchema),
+  const form = useForm<z.infer<typeof RegisterUserSchema>>({
+    resolver: zodResolver(RegisterUserSchema),
     defaultValues: {
       email: "",
       password: "",
       name: "",
+      image: "",
     },
   });
+  const getRandomProfileImage = () => {
+    const r: number = Math.floor(Math.random() * avatarLinks.length);
+    return avatarLinks[r];
+  };
+  const [avatar, setAvatar] = useState<string>(getRandomProfileImage());
+  const [isDialogOpen, setDialogOpen] = useState(false);
 
-  const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
+  const onSubmit = (values: z.infer<typeof RegisterUserSchema>) => {
     setError("");
     setSuccess("");
     startTransition(() => {
+      values.image = avatar;
       register(values).then((data) => {
         setError(data.error);
         setSuccess(data.success);
@@ -39,8 +51,19 @@ export const RegisterForm = () => {
   };
 
   return (
-    <CardWrapper headerLabel="Sign up" backButtonLabel="Already have an account?" backButtonHref="/auth/login" showSocial>
+    <CardWrapper headerLabel="Sign up" backButtonLabel="Already have an account?" backButtonHref="/auth/login">
       <Form {...form}>
+        <div className="w-full flex justify-center content-center">
+          <Avatar
+            onClick={() => {
+              setDialogOpen(true);
+            }}
+          >
+            <AvatarImage src={avatar} alt="@shadcn" />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+          <AvatarDialog isDialogOpen={isDialogOpen} setDialogOpen={setDialogOpen} setAvatar={setAvatar} />
+        </div>
         <form name="register-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-4">
             <FormField
@@ -86,7 +109,7 @@ export const RegisterForm = () => {
           <FormError message={error} />
           <FormSuccess message={success} />
           {success ? (
-            <Button name="login-button btn" className="w-full" disabled={isPending}>
+            <Button name="login-button btn" type="button" className="w-full" disabled={isPending}>
               <Link href="/auth/login">Login</Link>
             </Button>
           ) : (
