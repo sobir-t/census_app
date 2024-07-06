@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { FormSuccess } from "@/components/form-success";
 import { FormError } from "@/components/form-error";
-import { login } from "@/actions/auth";
+import { login } from "@/actions/actionsAuth";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 
 export default function LoginPage() {

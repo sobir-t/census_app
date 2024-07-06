@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 
 import { AvatarDialog } from "@/components/auth/avatar-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { updateUser } from "@/actions/user";
+import { updateUser } from "@/actions/actionsUser";
 import { UpdatePasswordDialog } from "./update-password-dialog";
 import { User } from "next-auth";
 
@@ -68,7 +68,7 @@ export const ProfileForm = ({ user }: { user: User }) => {
   };
 
   return (
-    <CardWrapper headerLabel="User Profile">
+    <CardWrapper>
       <div className="w-full flex justify-between content-center">
         <Avatar>
           <AvatarImage src={avatar} alt="@shadcn" />

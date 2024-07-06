@@ -2,7 +2,7 @@
 
 import * as z from "zod";
 import bcrypt from "bcryptjs";
-import { dbGetUserByEmail, dbGetUserById, dbUpdatePassword, dbUpdateUser } from "@/data/user";
+import { dbGetUserByEmail, dbGetUserById, dbUpdatePassword, dbUpdateUser } from "@/data/dbUsers";
 import { UpdatePasswordSchema, UpdateUserSchema } from "@/schemas";
 import { auth } from "@/auth";
 import { User } from "@prisma/client";

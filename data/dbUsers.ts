@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
+import { User } from "@prisma/client";
 
-export const dbGetUserByEmail = async (email: string) => {
+export const dbGetUserByEmail = async (email: string): Promise<User | null> => {
   try {
     const user = await db.user.findUnique({ where: { email } });
     return user;
@@ -9,7 +10,7 @@ export const dbGetUserByEmail = async (email: string) => {
   }
 };
 
-export const dbGetUserById = async (id: number) => {
+export const dbGetUserById = async (id: number): Promise<User | null> => {
   try {
     const user = await db.user.findUnique({ where: { id } });
     return user;
@@ -18,7 +19,17 @@ export const dbGetUserById = async (id: number) => {
   }
 };
 
-export const dbSaveNewUser = async ({ name, email, password, image }: { name: string; email: string; password: string; image: string }) => {
+export const dbSaveNewUser = async ({
+  name,
+  email,
+  password,
+  image,
+}: {
+  name: string;
+  email: string;
+  password: string;
+  image: string;
+}): Promise<{ user?: User; db_error?: string }> => {
   try {
     const user = await db.user.create({
       data: {
@@ -34,7 +45,19 @@ export const dbSaveNewUser = async ({ name, email, password, image }: { name: st
   }
 };
 
-export const dbUpdateUser = async ({ id, name, email, image }: { id: number; name?: string; email?: string; image?: string }) => {
+export const dbUpdateUser = async ({
+  id,
+  name,
+  email,
+  image,
+  addressId,
+}: {
+  id: number;
+  name?: string;
+  email?: string;
+  image?: string;
+  addressId?: number;
+}): Promise<{ user?: User; db_error?: string }> => {
   try {
     const user = await db.user.update({
       where: { id },
@@ -42,6 +65,7 @@ export const dbUpdateUser = async ({ id, name, email, image }: { id: number; nam
         name,
         email,
         image,
+        addressId,
       },
     });
     return { user };
@@ -50,7 +74,7 @@ export const dbUpdateUser = async ({ id, name, email, image }: { id: number; nam
   }
 };
 
-export const dbUpdatePassword = async ({ id, password }: { id: number; password: string }) => {
+export const dbUpdatePassword = async ({ id, password }: { id: number; password: string }): Promise<{ user?: User; db_error?: string }> => {
   try {
     const user = await db.user.update({
       where: { id },

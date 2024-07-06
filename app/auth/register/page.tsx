@@ -22,9 +22,8 @@ import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { CardWrapper } from "@/components/auth/card-wrapper";
-import { register } from "@/actions/auth";
+import { register } from "@/actions/actionsAuth";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 
 import { AvatarDialog } from "@/components/auth/avatar-dialog";
 import { avatarLinks } from "@/lib/avatars";

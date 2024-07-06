@@ -1,7 +1,7 @@
 import Credentials from "next-auth/providers/credentials";
 import type { NextAuthConfig, User } from "next-auth";
 import { LoginSchema } from "@/schemas";
-import { dbGetUserByEmail } from "@/data/user";
+import { dbGetUserByEmail } from "@/data/dbUsers";
 import bcrypt from "bcryptjs";
 
 export default {
@@ -20,7 +20,6 @@ export default {
 
           if (passwordMatch) return user as unknown as User;
         }
-
         return null;
       },
     }),

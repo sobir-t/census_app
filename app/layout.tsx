@@ -3,7 +3,6 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navbar";
 import { auth } from "@/auth";
-import { SessionProvider } from "next-auth/react";
 import { cookies } from "next/headers";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -19,16 +18,17 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   cookies();
-  const user = (await auth())?.user || undefined;
+  const session = await auth();
+  const user = session?.user;
 
   return (
-    <SessionProvider>
-      <html lang="en">
-        <body className={inter.className}>
+    <html lang="en">
+      <body className={inter.className}>
+        <div className="min-h-full">
           <Navbar user={user} />
           {children}
-        </body>
-      </html>
-    </SessionProvider>
+        </div>
+      </body>
+    </html>
   );
 }

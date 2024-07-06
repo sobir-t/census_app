@@ -6,11 +6,15 @@ import { AuthError, Session } from "next-auth";
 
 import { LoginSchema, RegisterUserSchema } from "@/schemas";
 import { auth, signIn, signOut, unstable_update } from "@/auth";
-import { dbGetUserByEmail, dbSaveNewUser } from "@/data/user";
+import { dbGetUserByEmail, dbSaveNewUser } from "@/data/dbUsers";
 import { User } from "@prisma/client";
 
 export const getAuthUser = async () => {
   return (await auth())?.user;
+};
+
+const wait = async (): Promise<void> => {
+  return new Promise<void>((resolve) => setTimeout(resolve, 1000));
 };
 
 export const login = async (
@@ -49,7 +53,7 @@ export const login = async (
     throw error;
   }
 
-  return { success: "Successfull login." };
+  return { success: "Successful login." };
 };
 
 export const logout = async () => {

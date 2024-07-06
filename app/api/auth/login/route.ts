@@ -1,6 +1,6 @@
 // /api/auth/login
 
-import { login } from "@/actions/auth";
+import { login } from "@/actions/actionsAuth";
 import { NextResponse, NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {

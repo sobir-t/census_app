@@ -1,6 +1,6 @@
 // /api/auth/register
 
-import { register } from "@/actions/auth";
+import { register } from "@/actions/actionsAuth";
 
 export async function POST(request: Request) {
   const { success, user, error, db_error, data } = await register(await request.json());

@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UpdatePasswordSchema } from "@/schemas";
 import { z } from "zod";
-import { updatePassword } from "@/actions/user";
+import { updatePassword } from "@/actions/actionsUser";
 import { signOut } from "next-auth/react";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";
