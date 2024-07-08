@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { User } from "@prisma/client";
+import { User, UserRole } from "@prisma/client";
 
 export const dbGetUserByEmail = async (email: string): Promise<User | null> => {
   try {
@@ -24,11 +24,15 @@ export const dbSaveNewUser = async ({
   email,
   password,
   image,
+  role,
+  householdId,
 }: {
   name: string;
   email: string;
   password: string;
   image: string;
+  role?: UserRole;
+  householdId?: number;
 }): Promise<{ user?: User; db_error?: string }> => {
   try {
     const user = await db.user.create({
@@ -37,6 +41,8 @@ export const dbSaveNewUser = async ({
         email,
         password,
         image,
+        role,
+        householdId,
       },
     });
     return { user };
@@ -50,13 +56,15 @@ export const dbUpdateUser = async ({
   name,
   email,
   image,
-  addressId,
+  role,
+  householdId,
 }: {
   id: number;
   name?: string;
   email?: string;
   image?: string;
-  addressId?: number;
+  role?: UserRole;
+  householdId?: number;
 }): Promise<{ user?: User; db_error?: string }> => {
   try {
     const user = await db.user.update({
@@ -65,7 +73,8 @@ export const dbUpdateUser = async ({
         name,
         email,
         image,
-        addressId,
+        householdId,
+        role,
       },
     });
     return { user };

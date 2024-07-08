@@ -8,11 +8,11 @@ import { UpdatePasswordSchema } from "@/schemas";
 import { z } from "zod";
 import { updatePassword } from "@/actions/actionsUser";
 import { signOut } from "next-auth/react";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
-import { Input } from "../ui/input";
-import { FormSuccess } from "../form-success";
-import { FormError } from "../form-error";
-import { Button } from "../ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { FormSuccess } from "@/components/form-success";
+import { FormError } from "@/components/form-error";
+import { Button } from "@/components/ui/button";
 
 interface UpdatePasswordDialogProps {
   isEditPasswordOpen: boolean;

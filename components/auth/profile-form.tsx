@@ -17,7 +17,7 @@ import { useRouter } from "next/navigation";
 import { AvatarDialog } from "@/components/auth/avatar-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { updateUser } from "@/actions/actionsUser";
-import { UpdatePasswordDialog } from "./update-password-dialog";
+import { UpdatePasswordDialog } from "@/components/auth/update-password-dialog";
 import { User } from "next-auth";
 
 // export const dynamic = "force-dynamic";

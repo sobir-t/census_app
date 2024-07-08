@@ -13,8 +13,8 @@ export const getAuthUser = async () => {
   return (await auth())?.user;
 };
 
-const wait = async (): Promise<void> => {
-  return new Promise<void>((resolve) => setTimeout(resolve, 1000));
+export const wait = async (seconds: number = 1): Promise<void> => {
+  return new Promise<void>((resolve) => setTimeout(resolve, seconds * 1000));
 };
 
 export const login = async (

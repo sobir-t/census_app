@@ -4,8 +4,8 @@
 
 // export const dynamic = "force-dynamic";
 
-import AddressCard from "@/components/records/address-card";
-import LoadingCard from "@/components/records/loading-card";
+import AddressCard from "@/components/household/address-card";
+import LoadingCard from "@/components/household/loading-card";
 import { User } from "next-auth";
 import { useSession } from "next-auth/react";
 

@@ -13,11 +13,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum UserRole {
-  ADMIN
-  USER
-}
-
 model Account {
   id                Int     @id @default(autoincrement())
   // id                Int  @id @default(uuid())
@@ -38,19 +33,46 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
+enum UserRole {
+  ADMIN
+  USER
+}
+
 model User {
-  id                 Int         @id @default(autoincrement())
+  id                 Int      @id @default(autoincrement())
   // id                 String    @id @default(uuid())
   name               String
-  email              String      @unique
+  email              String   @unique
   image              String
   password           String
-  role               UserRole    @default(USER)
-  accounts           Account[]
-  isTwoFactorEnabled Boolean     @default(false)
-  addressId          Int?
-  address            Address?    @relation(fields: [addressId], references: [id], onDelete: NoAction)
-  Relatives          Relatives[]
+  role               UserRole @default(USER)
+  householdId        Int?     @unique
+  isTwoFactorEnabled Boolean  @default(false)
+
+  accounts  Account[]
+  household Household?  @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  Relatives Relatives[]
+}
+
+enum HomeType {
+  HOUSE
+  APARTMENT
+  MOBILE_HOME
+  SHELTER
+}
+
+enum Ownership {
+  MORTGAGE
+  OWN
+  RENT
+  FREE_LIVING
+}
+
+model Lienholder {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  Household Household[]
 }
 
 enum State {
@@ -107,38 +129,97 @@ enum State {
   WY
 }
 
-model Address {
-  id       Int       @id @default(autoincrement())
-  address1 String
-  address2 String?
-  city     String
-  state    State
-  zip      String    @db.VarChar(5)
-  Records  Records[]
-  Users    User[]
+model Household {
+  id           Int       @id @default(autoincrement())
+  homeType     HomeType
+  ownership    Ownership
+  lienholderId Int?
+  address1     String
+  address2     String?
+  city         String
+  state        State
+  zip          String    @db.VarChar(5)
+
+  lienholder Lienholder? @relation(fields: [lienholderId], references: [id], onDelete: NoAction)
+  Records    Records[]
+  Users      User[]
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum Hispanic {
+  NO
+  MEXICAN
+  PUERTO_RICAN
+  CUBAN
+  OTHER
+  NO_ANSWER
+}
+
+enum Race {
+  WHITE
+  BLACK
+  CHINESE
+  FILIPINO
+  ASIAN_INDIAN
+  VIETNAMESE
+  KOREAN
+  JAPANESE
+  OTHER_ASIAN
+  NATIVE_HAWAIIAN
+  SAMOAN
+  CHAMORRO
+  OTHER_PACIFIC
+  OTHER
+  NO_ANSWER
+}
+
+enum OtherStay {
+  NO
+  COLLEGE
+  MILITARY_ASSIGNMENT
+  JOB_OR_BUSINESS
+  NURSING_HOME
+  WITH_PARENT_OR_OTHER_RELATIVE
+  SEASONAL_OR_SECOND_RESIDENT
+  JAIL_OR_PRISON
+  OTHER
 }
 
 model Records {
-  id        Int      @id @default(autoincrement())
-  firstName String
-  lastName  String
-  dob       DateTime
-  ssn       String   @db.VarChar(9)
-  addressId Int
-  address   Address  @relation(fields: [addressId], references: [id], onDelete: NoAction)
+  id            Int       @id @default(autoincrement())
+  firstName     String
+  lastName      String
+  dob           DateTime
+  gender        Gender
+  telephone     Int?
+  householdId   Int
+  hispanic      Hispanic
+  hispanicOther String?
+  race          Race
+  raceOther     String?
+  otherStay     OtherStay
+
+  household Household @relation(fields: [householdId], references: [id], onDelete: NoAction)
 }
 
 enum Relationship {
   SELF
   SPOUSE
-  CHILD
-  PARENT
-  GRANDPARENT
-  GRANDCHILD
+  PARTNER
+  BIOLOGICAL_CHILD
+  ADOPTED_CHILD
+  STEP_CHILD
   CUSINE
-  AUNT
-  UNCLE
-  NEPHEW
+  PARENT
+  GRANDCHILD
+  GRANDPARENT
+  OTHER_RELATIVE
+  OTHER_NONRELATIVE
+  ROOMMATE_HUSEMATE
 }
 
 model Relatives {

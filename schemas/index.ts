@@ -14,6 +14,8 @@ export const LoginSchema = z.object({
     }),
 });
 
+export const ROLE = ["USER", "ADMIN"] as const;
+
 export const RegisterUserSchema = z.object({
   email: z.string({ required_error: "email is required." }).email({
     message: "has to be proper email format.",
@@ -46,6 +48,8 @@ export const UpdateUserSchema = z.object({
     })
     .optional(),
   image: z.string().optional(),
+  role: z.enum(ROLE).optional(),
+  householdId: z.number().optional(),
 });
 
 export const UpdatePasswordSchema = z.object({
@@ -124,10 +128,17 @@ export const STATES = [
   "WY",
 ] as const;
 
-export const AddressSchema = z.object({
+export const HOME_TYPE = ["HOUSE", "APARTMENT", "MOBILE_HOME", "SHELTER"] as const;
+
+export const OWNERSHIP = ["MORTGAGE", "OWN", "RENT", "FREE_LIVING"] as const;
+
+export const HouseholdSchema = z.object({
   userId: z.number({ required_error: "id is required." }).min(1, {
     message: "minimum 1 digit required.",
   }),
+  homeType: z.enum(HOME_TYPE),
+  ownership: z.enum(OWNERSHIP),
+  lienholderId: z.coerce.number().nullable(),
   address1: z.string({ required_error: "Address 1 is required." }),
   address2: z.string().optional(),
   city: z.string({ required_error: "City is required." }),
@@ -135,13 +146,16 @@ export const AddressSchema = z.object({
   zip: z.string({ required_error: "zip code is required." }).regex(/^\d{5}$/, { message: "zip code must be 5 digits." }),
 });
 
-export const UpdateAddressSchema = z.object({
+export const UpdateHouseholdSchema = z.object({
   userId: z.number({ required_error: "id is required." }).min(1, {
     message: "minimum 1 digit required.",
   }),
   id: z.number({ required_error: "id is required." }).min(1, {
     message: "minimum 1 digit required.",
   }),
+  homeType: z.enum(HOME_TYPE),
+  ownership: z.enum(OWNERSHIP),
+  lienholderId: z.coerce.number().nullable(),
   address1: z.string({ required_error: "Address 1 is required." }),
   address2: z.string().optional(),
   city: z.string({ required_error: "City is required." }),
@@ -149,17 +163,52 @@ export const UpdateAddressSchema = z.object({
   zip: z.string({ required_error: "zip code is required." }).regex(/^\d{5}$/, { message: "zip code must be 5 digits." }),
 });
 
+export const GENDER = ["MALE", "FEMALE"] as const;
+
+export const HISPANIC = ["NO", "MEXICAN", "PUERTO_RICAN", "CUBAN", "OTHER", "NO_ANSWER"] as const;
+
+export const RACE = [
+  "WHITE",
+  "BLACK",
+  "CHINESE",
+  "FILIPINO",
+  "ASIAN_INDIAN",
+  "VIETNAMESE",
+  "KOREAN",
+  "JAPANESE",
+  "OTHER_ASIAN",
+  "NATIVE_HAWAIIAN",
+  "SAMOAN",
+  "CHAMORRO",
+  "OTHER_PACIFIC",
+  "OTHER",
+  "NO_ANSWER",
+] as const;
+
+export const OTHER_STAY = [
+  "NO",
+  "COLLEGE",
+  "MILITARY_ASSIGNMENT",
+  "JOB_OR_BUSINESS",
+  "NURSING_HOME",
+  "WITH_PARENT_OR_OTHER_RELATIVE",
+  "SEASONAL_OR_SECOND_RESIDENT",
+  "JAIL_OR_PRISON",
+  "OTHER",
+] as const;
+
 export const RecordSchema = z.object({
   firstName: z.string({ required_error: "First Name is required." }).regex(/^[a-zA-Z0-9]$/, { message: "Only alphabets and digits are allowed." }),
   lastName: z.string({ required_error: "Last Name is required." }).regex(/^[a-zA-Z0-9]$/, { message: "Only alphabets and digits are allowed." }),
   dob: z.string({ required_error: "Date of birth is required." }).date("Date has to be in YYYY-MM-DD format."),
-  ssn: z
-    .string()
-    .length(9, {
-      message: "SSN has to be 9 digits.",
-    })
-    .regex(/^\d{9}$/, { message: "SSN has to be 9 digits." }),
-  addressId: z.number({ required_error: "Address id is required." }),
+  gender: z.enum(GENDER),
+  telephone: z.number().optional(),
+  householdId: z.number({ required_error: "Address id is required." }),
+  hispanic: z.enum(HISPANIC),
+  hispanicOther: z.string().optional(),
+  race: z.enum(RACE),
+  raceOther: z.string().optional(),
+  otherStay: z.enum(OTHER_STAY),
 });
 
 export const UpdateRecordSchema = z.object({
@@ -172,11 +221,12 @@ export const UpdateRecordSchema = z.object({
   firstName: z.string({ required_error: "First Name is required." }).regex(/^[a-zA-Z0-9]$/, { message: "Only alphabets and digits are allowed." }),
   lastName: z.string({ required_error: "Last Name is required." }).regex(/^[a-zA-Z0-9]$/, { message: "Only alphabets and digits are allowed." }),
   dob: z.string({ required_error: "Date of birth is required." }).date("Date has to be in YYYY-MM-DD format."),
-  ssn: z
-    .string()
-    .length(9, {
-      message: "SSN has to be 9 digits.",
-    })
-    .regex(/^\d{9}$/, { message: "SSN has to be 9 digits." }),
-  addressId: z.number({ required_error: "Address id is required." }),
+  gender: z.enum(GENDER),
+  telephone: z.number().optional(),
+  householdId: z.number({ required_error: "Address id is required." }),
+  hispanic: z.enum(HISPANIC),
+  hispanicOther: z.string().optional(),
+  race: z.enum(RACE),
+  raceOther: z.string().optional(),
+  otherStay: z.enum(OTHER_STAY),
 });

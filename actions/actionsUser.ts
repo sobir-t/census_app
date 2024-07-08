@@ -16,7 +16,7 @@ export const updateUser = async (
 
   if (!validatedFields.success) return { error: "Invalid fields!", data: validatedFields.error?.errors };
 
-  const { id, email, name, image } = validatedFields.data;
+  const { id, email, name, image, role, householdId } = validatedFields.data;
 
   const currentUser = (await auth())?.user;
 
@@ -27,6 +27,8 @@ export const updateUser = async (
     name,
     email,
     image,
+    role,
+    householdId,
   });
 
   if (user) return { success: "Successfully updated user!", user };

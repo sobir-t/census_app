@@ -6,50 +6,54 @@ import { Dispatch, SetStateAction } from "react";
 import { User } from "next-auth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AddressSchema, STATES } from "@/schemas";
+import { HOME_TYPE, HouseholdSchema, OWNERSHIP, STATES } from "@/schemas";
 import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";
 import { FormSuccess } from "../form-success";
 import { FormError } from "../form-error";
 import { Button } from "../ui/button";
-import { Address } from "@prisma/client";
+import { Household, Lienholder } from "@prisma/client";
 import { Select } from "@radix-ui/react-select";
 import { SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { saveAddress, updateAddress } from "@/actions/actionsRecords";
+import { saveHousehold, updateHousehold } from "@/actions/actionsRecords";
 
 interface UpdateAddressDialogProps {
   isEditAddressOpen: boolean;
   setEditAddressOpen: Dispatch<SetStateAction<boolean>>;
-  address: Address | undefined;
+  household: Household | undefined;
   user: User;
 }
 
-export default function UpdateAddressDialog({ user, address, isEditAddressOpen, setEditAddressOpen }: UpdateAddressDialogProps) {
+export default function UpdateAddressDialog({ user, household, isEditAddressOpen, setEditAddressOpen }: UpdateAddressDialogProps) {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<z.infer<typeof AddressSchema>>({
-    resolver: zodResolver(AddressSchema),
+  const form = useForm<z.infer<typeof HouseholdSchema>>({
+    resolver: zodResolver(HouseholdSchema),
     defaultValues: {
       userId: parseInt(user.id as string),
-      address1: address?.address1,
-      address2: address?.address2 || undefined,
-      city: address?.city,
-      state: address?.state,
-      zip: address?.zip,
+      homeType: household?.homeType || "APARTMENT",
+      ownership: household?.ownership || "RENT",
+      lienholderId: household?.lienholderId || undefined,
+      address1: household?.address1 || "",
+      address2: household?.address2 || "",
+      city: household?.city || "",
+      state: household?.state || "",
+      zip: household?.zip || "",
     },
   });
 
-  const onSubmit = (values: z.infer<typeof AddressSchema>) => {
+  const onSubmit = (values: z.infer<typeof HouseholdSchema>) => {
+    console.log("submitting form");
     setError("");
     setSuccess("");
     startTransition(() => {
       console.log("values:");
       console.log(values);
-      if (!address)
-        saveAddress(values).then((data) => {
+      if (!household)
+        saveHousehold(values).then((data) => {
           if (data.error) setError(data.error);
           else {
             setSuccess(data.success);
@@ -57,7 +61,7 @@ export default function UpdateAddressDialog({ user, address, isEditAddressOpen, 
           }
         });
       else
-        updateAddress({ id: address.id, ...values }).then((data) => {
+        updateHousehold({ id: household.id, ...values }).then((data) => {
           if (data.error) setError(data.error);
           else {
             setSuccess(data.success);
@@ -72,8 +76,64 @@ export default function UpdateAddressDialog({ user, address, isEditAddressOpen, 
         <DialogPanel className="w-96 border bg-white p-5">
           <DialogTitle className="font-bold">Update your address</DialogTitle>
           <Form {...form}>
-            <form name="register-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <div className="space-y-4 grid grid-cols-12 gap-2">
+            <form
+              name="register-form"
+              onSubmit={form.handleSubmit(onSubmit)}
+              onClick={(e) => {
+                e.preventDefault();
+              }}
+              className="space-y-6"
+            >
+              <div className="grid grid-cols-12 gap-2">
+                <FormField
+                  control={form.control}
+                  name="homeType"
+                  render={({ field }) => (
+                    <FormItem id="homeType" className="col-span-6">
+                      <FormLabel>Home type</FormLabel>
+                      <Select {...field} disabled={isPending} onValueChange={field.onChange}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {HOME_TYPE.map((type) => (
+                            <SelectItem key={type} value={type}>
+                              {type}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                ></FormField>
+                <FormField
+                  control={form.control}
+                  name="ownership"
+                  render={({ field }) => (
+                    <FormItem id="ownership" className="col-span-6">
+                      <FormLabel>Ownership</FormLabel>
+                      <Select {...field} disabled={isPending} onValueChange={field.onChange}>
+                        <FormControl>
+                          <SelectTrigger>
+                            {/* <SelectValue placeholder={household?.state ? household.state : "Select State"} /> */}
+                            <SelectValue />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {OWNERSHIP.map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                ></FormField>
                 <FormField
                   control={form.control}
                   name="address1"
@@ -122,7 +182,8 @@ export default function UpdateAddressDialog({ user, address, isEditAddressOpen, 
                       <Select {...field} disabled={isPending} onValueChange={field.onChange}>
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder={address?.state ? address.state : "Select State"} />
+                            {/* <SelectValue placeholder={household?.state ? household.state : "Select State"} /> */}
+                            <SelectValue />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
