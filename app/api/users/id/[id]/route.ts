@@ -1,6 +1,6 @@
 // /api/users/id/[id]
 
-import { dbGetUserById } from "@/data/dbUser";
+import { dbGetUserById } from "@/data/dbUsers";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {

@@ -19,6 +19,38 @@ export const dbGetUserById = async (id: number): Promise<User | null> => {
   }
 };
 
+export const dbGetUsersByRecordId = async (id: number): Promise<{ users?: User[] | null; db_error?: string }> => {
+  try {
+    const users: User[] | null = await db.user.findMany({
+      where: {
+        household: {
+          Records: {
+            some: {
+              id,
+            },
+          },
+        },
+      },
+    });
+    return { users };
+  } catch (e: any) {
+    return { db_error: e.message };
+  }
+};
+
+export const dbGetUsersByHouseholdId = async (householdId: number): Promise<{ users?: User[] | null; db_error?: string }> => {
+  try {
+    const users: User[] | null = await db.user.findMany({
+      where: {
+        householdId,
+      },
+    });
+    return { users };
+  } catch (e: any) {
+    return { db_error: e.message };
+  }
+};
+
 export const dbSaveNewUser = async ({
   name,
   email,

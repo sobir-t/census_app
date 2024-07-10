@@ -1,6 +1,5 @@
 import { db } from "@/lib/db";
 import { HomeType, Household, Lienholder, Ownership, State } from "@prisma/client";
-import { number } from "zod";
 
 export const dbGetHouseholdById = async (id: number): Promise<{ household?: Household | null; db_error?: string }> => {
   try {

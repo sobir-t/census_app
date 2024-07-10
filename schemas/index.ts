@@ -198,35 +198,33 @@ export const OTHER_STAY = [
 ] as const;
 
 export const RecordSchema = z.object({
+  userId: z.number({ required_error: "userId is required." }),
   firstName: z.string({ required_error: "First Name is required." }).regex(/^[a-zA-Z0-9]$/, { message: "Only alphabets and digits are allowed." }),
   lastName: z.string({ required_error: "Last Name is required." }).regex(/^[a-zA-Z0-9]$/, { message: "Only alphabets and digits are allowed." }),
-  dob: z.string({ required_error: "Date of birth is required." }).date("Date has to be in YYYY-MM-DD format."),
+  dob: z.date({ invalid_type_error: "Date has to be in YYYY-MM-DD format.", required_error: "Date of Birth is required." }),
   gender: z.enum(GENDER),
-  telephone: z.number().optional(),
+  telephone: z.number().nullable(),
   householdId: z.number({ required_error: "Address id is required." }),
   hispanic: z.enum(HISPANIC),
-  hispanicOther: z.string().optional(),
+  hispanicOther: z.string().nullable(),
   race: z.enum(RACE),
-  raceOther: z.string().optional(),
+  raceOther: z.string().nullable(),
   otherStay: z.enum(OTHER_STAY),
 });
 
 export const UpdateRecordSchema = z.object({
-  userId: z.number({ required_error: "id is required." }).min(1, {
-    message: "minimum 1 digit required.",
-  }),
   id: z.number({ required_error: "id is required." }).min(1, {
     message: "minimum 1 digit required.",
   }),
   firstName: z.string({ required_error: "First Name is required." }).regex(/^[a-zA-Z0-9]$/, { message: "Only alphabets and digits are allowed." }),
   lastName: z.string({ required_error: "Last Name is required." }).regex(/^[a-zA-Z0-9]$/, { message: "Only alphabets and digits are allowed." }),
-  dob: z.string({ required_error: "Date of birth is required." }).date("Date has to be in YYYY-MM-DD format."),
+  dob: z.date({ invalid_type_error: "Date has to be in YYYY-MM-DD format.", required_error: "Date of Birth is required." }),
   gender: z.enum(GENDER),
-  telephone: z.number().optional(),
+  telephone: z.number().nullable(),
   householdId: z.number({ required_error: "Address id is required." }),
   hispanic: z.enum(HISPANIC),
-  hispanicOther: z.string().optional(),
+  hispanicOther: z.string().nullable(),
   race: z.enum(RACE),
-  raceOther: z.string().optional(),
+  raceOther: z.string().nullable(),
   otherStay: z.enum(OTHER_STAY),
 });
