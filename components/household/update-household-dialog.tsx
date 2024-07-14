@@ -7,17 +7,26 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { HOME_TYPE, HouseholdSchema, OWNERSHIP, STATES } from "@/schemas";
 import { z } from "zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
-import { Input } from "../ui/input";
-import { FormSuccess } from "../form-success";
-import { FormError } from "../form-error";
-import { Button } from "../ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { FormSuccess } from "@/components/form-success";
+import { FormError } from "@/components/form-error";
+import { Button } from "@/components/ui/button";
 import { Household } from "@prisma/client";
 import { Select } from "@radix-ui/react-select";
-import { SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { saveHousehold, updateHousehold } from "@/actions/actionsHousehold";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
-import LienholderForm from "./lienholder-form";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import LienholderForm from "@/components/household/lienholder-form";
 
 interface UpdateAddressDialogProps {
   // isLoading: boolean;
@@ -26,7 +35,7 @@ interface UpdateAddressDialogProps {
   user: User;
 }
 
-export default function UpdateAddressDialog({ user, household, setEditHouseholdOpen }: UpdateAddressDialogProps) {
+export default function UpdateHouseholdDialog({ user, household, setEditHouseholdOpen }: UpdateAddressDialogProps) {
   const [error, setError] = useState<string | undefined>(undefined);
   const [success, setSuccess] = useState<string | undefined>(undefined);
   const [isPending, startTransition] = useTransition();

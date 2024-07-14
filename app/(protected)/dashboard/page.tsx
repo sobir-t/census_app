@@ -2,21 +2,14 @@
 
 "use client";
 
-// export const dynamic = "force-dynamic";
-
-import AddressCard from "@/components/household/address-card";
+import HouseholdCard from "@/components/household/household-card";
 import LoadingCard from "@/components/household/loading-card";
-import { User } from "next-auth";
+import { AuthUser } from "@/types/types";
 import { useSession } from "next-auth/react";
 
 export default function LandingPage() {
   let { data } = useSession();
+  const user: AuthUser | undefined = data?.user ? (data.user as AuthUser) : undefined;
 
-  const user: User | undefined = data?.user;
-
-  return (
-    <div className="dashboard-container w-full grid sm:grid-cols-12 gap-4">
-      {user ? <AddressCard user={user} /> : <LoadingCard className="loading-address-card" />}
-    </div>
-  );
+  return <div className="dashboard-container w-full ">{user ? <HouseholdCard user={user} /> : <LoadingCard className="loading-address-card" />}</div>;
 }

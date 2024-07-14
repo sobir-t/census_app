@@ -14,6 +14,21 @@ export const dbGetHouseholdById = async (id: number): Promise<{ household?: Hous
   }
 };
 
+export const dbGetHouseholdByUserId = async (userId: number): Promise<{ household?: Household | null; db_error?: string }> => {
+  try {
+    const result = await db.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: { household: true },
+    });
+    if (result && result.household) return { household: result.household };
+    else return { household: null };
+  } catch (e: any) {
+    return { db_error: e.message };
+  }
+};
+
 export const dbSaveHousehold = async ({
   homeType,
   ownership,

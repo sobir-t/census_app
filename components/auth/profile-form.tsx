@@ -18,11 +18,11 @@ import { AvatarDialog } from "@/components/auth/avatar-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { updateUser } from "@/actions/actionsUser";
 import { UpdatePasswordDialog } from "@/components/auth/update-password-dialog";
-import { User } from "next-auth";
+import { AuthUser } from "@/types/types";
 
 // export const dynamic = "force-dynamic";
 
-export const ProfileForm = ({ user }: { user: User }) => {
+export const ProfileForm = ({ user }: { user: AuthUser }) => {
   const { update } = useSession();
   const router = useRouter();
   // const [profile, setProfile] = useState(user);
@@ -130,7 +130,7 @@ export const ProfileForm = ({ user }: { user: User }) => {
                 onClick={(e) => {
                   e.preventDefault();
                   form.reset();
-                  setAvatar(user.image);
+                  setAvatar(user.image as string);
                   setEditOpen(false);
                 }}
               >
