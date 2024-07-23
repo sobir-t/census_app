@@ -202,7 +202,10 @@ export const RecordSchema = z.object({
   // .string({ required_error: "Date of Birth is required." })
   // .regex(/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0,1,2])\/(19|20)\d{2}$/, { message: "Date has to be in MM/dd/yyyy format." }),
   gender: z.enum(GENDER),
-  telephone: z.coerce.number().optional(),
+  telephone: z
+    .string()
+    .regex(/^(\d{5,10})?$/, "must be 5 to 10 digits or empty")
+    .optional(),
   householdId: z.number({ required_error: "Household id is required." }),
   hispanic: z.enum(HISPANIC),
   hispanicOther: z.string().optional(),
@@ -219,8 +222,70 @@ export const UpdateRecordSchema = z.object({
   lastName: z.string({ required_error: "Last Name is required." }).regex(/^[a-zA-Z0-9]$/, { message: "Only alphabets and digits are allowed." }),
   dob: z.date({ invalid_type_error: "Date has to be in YYYY-MM-DD format.", required_error: "Date of Birth is required." }),
   gender: z.enum(GENDER),
-  telephone: z.coerce.number().optional(),
+  telephone: z
+    .string()
+    .regex(/^(\d{5,10})?$/, "must be 5 to 10 digits or empty")
+    .optional(),
   householdId: z.number({ required_error: "Household id is required." }),
+  hispanic: z.enum(HISPANIC),
+  hispanicOther: z.string().optional(),
+  race: z.enum(RACE),
+  raceOther: z.string().optional(),
+  otherStay: z.enum(OTHER_STAY),
+});
+
+export const RELATIONSHIP = [
+  "SELF",
+  "SPOUSE",
+  "PARTNER",
+  "BIOLOGICAL_CHILD",
+  "ADOPTED_CHILD",
+  "STEP_CHILD",
+  "COSINE",
+  "PARENT",
+  "GRANDCHILD",
+  "GRANDPARENT",
+  "OTHER_RELATIVE",
+  "OTHER_NON_RELATIVE",
+  "ROOMMATE_HOUSEMATE",
+] as const;
+
+export const RecordWithRelationshipSchema = z.object({
+  userId: z.number({ required_error: "user id is required." }),
+  relationship: z.enum(RELATIONSHIP),
+  firstName: z.string({ required_error: "First Name is required." }).regex(/^[a-zA-Z0-9']*$/, { message: "Only alphabets and digits are allowed." }),
+  lastName: z.string({ required_error: "Last Name is required." }).regex(/^[a-zA-Z0-9']*$/, { message: "Only alphabets and digits are allowed." }),
+  dob: z.date({ invalid_type_error: "Date has to be in MM/dd/yyyy format.", required_error: "Date of Birth is required." }),
+  // .string({ required_error: "Date of Birth is required." })
+  // .regex(/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0,1,2])\/(19|20)\d{2}$/, { message: "Date has to be in MM/dd/yyyy format." }),
+  gender: z.enum(GENDER),
+  telephone: z
+    .string()
+    .regex(/^(\d{5,10})?$/, "must be 5 to 10 digits or empty")
+    .optional(),
+  hispanic: z.enum(HISPANIC),
+  hispanicOther: z.string().optional(),
+  race: z.enum(RACE),
+  raceOther: z.string().optional(),
+  otherStay: z.enum(OTHER_STAY),
+});
+
+export const UpdateRecordWithRelationshipSchema = z.object({
+  id: z.number({ required_error: "id is required." }).min(1, {
+    message: "minimum 1 digit required.",
+  }),
+  userId: z.number({ required_error: "user id is required." }),
+  relationship: z.enum(RELATIONSHIP),
+  firstName: z.string({ required_error: "First Name is required." }).regex(/^[a-zA-Z0-9']*$/, { message: "Only alphabets and digits are allowed." }),
+  lastName: z.string({ required_error: "Last Name is required." }).regex(/^[a-zA-Z0-9']*$/, { message: "Only alphabets and digits are allowed." }),
+  dob: z.date({ invalid_type_error: "Date has to be in MM/dd/yyyy format.", required_error: "Date of Birth is required." }),
+  // .string({ required_error: "Date of Birth is required." })
+  // .regex(/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0,1,2])\/(19|20)\d{2}$/, { message: "Date has to be in MM/dd/yyyy format." }),
+  gender: z.enum(GENDER),
+  telephone: z
+    .string()
+    .regex(/^(\d{5,10})?$/, "must be 5 to 10 digits or empty")
+    .optional(),
   hispanic: z.enum(HISPANIC),
   hispanicOther: z.string().optional(),
   race: z.enum(RACE),

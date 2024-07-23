@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { Record } from "@prisma/client";
+import { Record, Relative } from "@prisma/client";
 
 export const dbGetAllRecords = async (): Promise<{ records?: Record[]; db_error?: string }> => {
   try {
@@ -72,6 +72,56 @@ export const dbDeleteRecordsUnderHouseholdId = async (householdId: number): Prom
       where: { householdId },
     });
     console.log(record);
+    return {};
+  } catch (e: any) {
+    return { db_error: e.message };
+  }
+};
+
+export const dbGetRelationshipsUnderUserId = async (userId: number): Promise<{ relatives?: Relative[]; db_error?: string }> => {
+  try {
+    const relatives: Relative[] = await db.relative.findMany({
+      where: { userId },
+    });
+    return { relatives };
+  } catch (e: any) {
+    return { db_error: e.message };
+  }
+};
+
+export const dbSaveRelative = async (newRelative: Omit<Relative, "id">): Promise<{ relative?: Relative; db_error?: string }> => {
+  try {
+    const relative: Relative = await db.relative.create({ data: newRelative });
+    return { relative };
+  } catch (e: any) {
+    return { db_error: e.message };
+  }
+};
+
+export const dbUpdateRelative = async (newRelative: Relative): Promise<{ relative?: Relative; db_error?: string }> => {
+  try {
+    const relative: Relative = await db.relative.update({
+      where: { id: newRelative.id },
+      data: newRelative,
+    });
+    return { relative };
+  } catch (e: any) {
+    return { db_error: e.message };
+  }
+};
+
+export const dbDeleteRelativeById = async (id: number): Promise<{ db_error?: string }> => {
+  try {
+    const relative = await db.relative.delete({ where: { id } });
+    return {};
+  } catch (e: any) {
+    return { db_error: e.message };
+  }
+};
+
+export const dbDeleteAllRelativeInfoUnderUserId = async (userId: number): Promise<{ db_error?: string }> => {
+  try {
+    const relative = await db.relative.deleteMany({ where: { userId } });
     return {};
   } catch (e: any) {
     return { db_error: e.message };

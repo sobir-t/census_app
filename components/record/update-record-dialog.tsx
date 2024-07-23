@@ -4,14 +4,13 @@ import React, { useState, useTransition } from "react";
 import { Dispatch, SetStateAction } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { HISPANIC, OTHER_STAY, RACE, RecordSchema } from "@/schemas";
+import { HISPANIC, OTHER_STAY, RACE, RecordWithRelationshipSchema, RELATIONSHIP } from "@/schemas";
 import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { FormSuccess } from "@/components/form-success";
 import { FormError } from "@/components/form-error";
 import { Button } from "@/components/ui/button";
-import { Record } from "@prisma/client";
 import { Select } from "@radix-ui/react-select";
 import { SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
@@ -25,58 +24,59 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon } from "@radix-ui/react-icons";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { saveRecord, updateRecord } from "@/actions/actionsRecord";
+import { saveRecord, saveRecordWithRelationship, updateRecord, updateRecordWithRelationship } from "@/actions/actionsRecord";
+import { AuthUser, RecordWithRelationship } from "@/types/types";
 
 interface UpdateRecordDialogProps {
-  householdId: number | undefined;
-  record: Record | undefined;
+  user: AuthUser;
+  recordWithRelationship: RecordWithRelationship | undefined;
   setEditRecordDialogOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export default function UpdateRecordDialog({ householdId, record, setEditRecordDialogOpen }: UpdateRecordDialogProps) {
+export default function UpdateRecordDialog({ user, recordWithRelationship, setEditRecordDialogOpen }: UpdateRecordDialogProps) {
   const [error, setError] = useState<string | undefined>(undefined);
   const [success, setSuccess] = useState<string | undefined>(undefined);
-  const [hispanicOtherDisabled, setHispanicOtherDisabled] = useState<boolean>(record?.hispanic != "OTHER");
-  const [raceOtherDisabled, setRaceOtherDisabled] = useState<boolean>(record?.race != "OTHER");
+  const [hispanicOtherDisabled, setHispanicOtherDisabled] = useState<boolean>(recordWithRelationship?.record?.hispanic != "OTHER");
+  const [raceOtherDisabled, setRaceOtherDisabled] = useState<boolean>(recordWithRelationship?.record?.race != "OTHER");
 
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<z.infer<typeof RecordSchema>>({
-    resolver: zodResolver(RecordSchema),
+  const form = useForm<z.infer<typeof RecordWithRelationshipSchema>>({
+    resolver: zodResolver(RecordWithRelationshipSchema),
     defaultValues: {
-      firstName: record?.firstName || "",
-      lastName: record?.lastName || "",
-      dob: record?.dob || "",
-      gender: record?.gender || "",
-      telephone: record?.telephone || undefined,
-      householdId,
-      hispanic: record?.hispanic || "",
-      hispanicOther: record?.hispanicOther || "",
-      race: record?.race || "",
-      raceOther: record?.raceOther || "",
-      otherStay: record?.otherStay || "",
+      userId: parseInt(user.id as string),
+      relationship: recordWithRelationship?.relative?.relationship || "",
+      firstName: recordWithRelationship?.record?.firstName || "",
+      lastName: recordWithRelationship?.record?.lastName || "",
+      dob: recordWithRelationship?.record?.dob || "",
+      gender: recordWithRelationship?.record?.gender || "",
+      telephone: recordWithRelationship?.record?.telephone || undefined,
+      hispanic: recordWithRelationship?.record?.hispanic || "",
+      hispanicOther: recordWithRelationship?.record?.hispanicOther || "",
+      race: recordWithRelationship?.record?.race || "",
+      raceOther: recordWithRelationship?.record?.raceOther || "",
+      otherStay: recordWithRelationship?.record?.otherStay || "",
     },
   });
 
-  const onSubmit = (values: z.infer<typeof RecordSchema>) => {
+  const onSubmit = (values: z.infer<typeof RecordWithRelationshipSchema>) => {
     setError(undefined);
     setSuccess(undefined);
     startTransition(() => {
       console.log(values);
-      if (!record)
-        saveRecord(values).then((data) => {
+      if (!recordWithRelationship)
+        saveRecordWithRelationship(values).then((data) => {
           if (data.error) setError(data.error);
           else {
             setSuccess(data.success);
           }
         });
       else
-        updateRecord({ id: record.id, ...values }).then((data) => {
+        updateRecordWithRelationship({ id: recordWithRelationship.record.id, ...values }).then((data) => {
           if (data.error) setError(data.error);
           else {
             setSuccess(data.success);
@@ -106,17 +106,47 @@ export default function UpdateRecordDialog({ householdId, record, setEditRecordD
             setEditRecordDialogOpen(true);
           }}
         >
-          {record ? "Edit record" : "Add record"}
+          {recordWithRelationship ? "Edit record" : "Add record"}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{record ? "Update existing person's data" : "Add new person to your household"}</DialogTitle>
+          <DialogTitle>{recordWithRelationship ? "Update existing person's data" : "Add new person to your household"}</DialogTitle>
           <DialogDescription>Any updates will be saved under your household.</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form name="register-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid sm:grid-cols-12 gap-2">
+              <FormField
+                control={form.control}
+                name="relationship"
+                render={({ field }) => (
+                  <FormItem id="relationship" className="sm:col-span-12">
+                    <FormLabel>Relationship</FormLabel>
+                    <Select
+                      {...field}
+                      disabled={isPending}
+                      onValueChange={(e) => {
+                        field.onChange(e);
+                      }}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {RELATIONSHIP.map((r) => (
+                          <SelectItem key={r} value={r}>
+                            {r}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              ></FormField>
               <FormField
                 control={form.control}
                 name="firstName"

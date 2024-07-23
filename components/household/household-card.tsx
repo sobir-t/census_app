@@ -85,7 +85,7 @@ export default function HouseholdCard({ user }: AddressCardProps) {
           </div>
         )}
       </div>
-      {household && <RecordsContainer householdId={household.id} />}
+      {household && <RecordsContainer user={user} />}
     </>
   );
 }

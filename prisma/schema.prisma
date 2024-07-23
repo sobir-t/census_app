@@ -50,8 +50,8 @@ model User {
   isTwoFactorEnabled Boolean  @default(false)
 
   accounts  Account[]
-  household Household?  @relation(fields: [householdId], references: [id], onDelete: Cascade)
-  Relatives Relatives[]
+  household Household? @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  Relatives Relative[]
 }
 
 enum HomeType {
@@ -195,7 +195,7 @@ model Record {
   lastName      String    @db.VarChar(18)
   dob           DateTime
   gender        Gender
-  telephone     Int?
+  telephone     String?   @db.Char(10)
   householdId   Int
   hispanic      Hispanic
   hispanicOther String?
@@ -203,7 +203,8 @@ model Record {
   raceOther     String?
   otherStay     OtherStay
 
-  household Household @relation(fields: [householdId], references: [id], onDelete: NoAction)
+  household Household  @relation(fields: [householdId], references: [id], onDelete: NoAction)
+  Relatives Relative[]
 }
 
 enum Relationship {
@@ -213,19 +214,20 @@ enum Relationship {
   BIOLOGICAL_CHILD
   ADOPTED_CHILD
   STEP_CHILD
-  CUSINE
+  COSINE
   PARENT
   GRANDCHILD
   GRANDPARENT
   OTHER_RELATIVE
-  OTHER_NONRELATIVE
-  ROOMMATE_HUSEMATE
+  OTHER_NON_RELATIVE
+  ROOMMATE_HOUSEMATE
 }
 
-model Relatives {
+model Relative {
   id           Int          @id @default(autoincrement())
   userId       Int
   relationship Relationship
-  target       Int
+  recordId     Int
   User         User         @relation(fields: [userId], references: [id])
+  Record       Record       @relation(fields: [recordId], references: [id])
 }
