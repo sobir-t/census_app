@@ -228,6 +228,6 @@ model Relative {
   userId       Int
   relationship Relationship
   recordId     Int
-  User         User         @relation(fields: [userId], references: [id])
-  Record       Record       @relation(fields: [recordId], references: [id])
+  User         User         @relation(fields: [userId], references: [id], onDelete: NoAction)
+  Record       Record       @relation(fields: [recordId], references: [id], onDelete: Cascade)
 }

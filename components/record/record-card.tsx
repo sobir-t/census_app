@@ -3,6 +3,7 @@
 import { Dispatch, SetStateAction } from "react";
 import UpdateRecordDialog from "./update-record-dialog";
 import { AuthUser, RecordWithRelationship } from "@/types/types";
+import { DeleteRecordAlertDialog } from "./delete-record-alert";
 
 interface RecordCardProps {
   user: AuthUser;
@@ -18,7 +19,12 @@ export default function RecordCard({ user, recordWithRelationship, setEditRecord
           <b>Relationship: </b>
           {recordWithRelationship.relative ? recordWithRelationship.relative.relationship : "not selected"}
         </p>
-        <UpdateRecordDialog user={user} recordWithRelationship={recordWithRelationship} setEditRecordDialogOpen={setEditRecordDialogOpen} />
+        <div className="actions">
+          <UpdateRecordDialog user={user} recordWithRelationship={recordWithRelationship} setEditRecordDialogOpen={setEditRecordDialogOpen} />
+          {recordWithRelationship && (
+            <DeleteRecordAlertDialog recordWithRelationship={recordWithRelationship} setEditRecordDialogOpen={setEditRecordDialogOpen} />
+          )}
+        </div>
       </div>
       <p className="full-name">
         <b>Full name:</b> {recordWithRelationship.record.firstName} {recordWithRelationship.record.lastName}

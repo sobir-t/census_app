@@ -28,7 +28,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { saveRecord, saveRecordWithRelationship, updateRecord, updateRecordWithRelationship } from "@/actions/actionsRecord";
+import { saveRecordWithRelationship, updateRecordWithRelationship } from "@/actions/actionsRecord";
 import { AuthUser, RecordWithRelationship } from "@/types/types";
 
 interface UpdateRecordDialogProps {
@@ -102,11 +102,12 @@ export default function UpdateRecordDialog({ user, recordWithRelationship, setEd
           variant="link"
           name="edit-record-button btn"
           type="button"
+          size="tight"
           onClick={() => {
             setEditRecordDialogOpen(true);
           }}
         >
-          {recordWithRelationship ? "Edit record" : "Add record"}
+          {recordWithRelationship ? "Edit" : "Add record"}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

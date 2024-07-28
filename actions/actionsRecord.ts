@@ -11,10 +11,10 @@ import {
   dbUpdateRecord,
   dbUpdateRelative,
 } from "@/data/dbRecord";
-import { $Enums, Record, Relative, User } from "@prisma/client";
+import { Record, Relative, User } from "@prisma/client";
 import { getHouseholdById, getHouseholdByUserId } from "./actionsHousehold";
 import { RecordSchema, RecordWithRelationshipSchema, UpdateRecordSchema, UpdateRecordWithRelationshipSchema } from "@/schemas";
-import { number, record, z } from "zod";
+import { z } from "zod";
 import { dbGetUserById, dbGetUsersByHouseholdId, dbGetUsersByRecordId } from "@/data/dbUsers";
 import { dbGetHouseholdById, dbGetHouseholdByUserId } from "@/data/dbHousehold";
 import { getAuthUser } from "./actionsAuth";
@@ -203,9 +203,11 @@ export const updateRecord = async (
  * @param recordId number
  * @returns Promise<{ success?: string; records?: Record[]; error?: string; data?: any; db_error?: string; code: number }>
  */
-export const deleteRecord = async (
-  recordId: number
-): Promise<{ success?: string; records?: Record[]; error?: string; data?: any; db_error?: string; code: number }> => {
+export const deleteRecordById = async ({
+  recordId,
+}: {
+  recordId: number;
+}): Promise<{ success?: string; records?: Record[]; error?: string; data?: any; db_error?: string; code: number }> => {
   const currentUser: AuthUser = await getAuthUser();
   const isAdmin: boolean = currentUser.role == "ADMIN";
   const result1 = await dbGetRecordById(recordId);
