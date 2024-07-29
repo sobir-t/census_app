@@ -198,7 +198,7 @@ export const OTHER_STAY = [
 export const RecordSchema = z.object({
   firstName: z.string({ required_error: "First Name is required." }).regex(/^[a-zA-Z0-9']*$/, { message: "Only alphabets and digits are allowed." }),
   lastName: z.string({ required_error: "Last Name is required." }).regex(/^[a-zA-Z0-9']*$/, { message: "Only alphabets and digits are allowed." }),
-  dob: z.date({ invalid_type_error: "Date has to be in MM/dd/yyyy format.", required_error: "Date of Birth is required." }),
+  dob: z.date({ invalid_type_error: "Date has to be in YYYY-MM-DD format.", required_error: "Date of Birth is required." }),
   // .string({ required_error: "Date of Birth is required." })
   // .regex(/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0,1,2])\/(19|20)\d{2}$/, { message: "Date has to be in MM/dd/yyyy format." }),
   gender: z.enum(GENDER),
@@ -255,7 +255,8 @@ export const RecordWithRelationshipSchema = z.object({
   relationship: z.enum(RELATIONSHIP),
   firstName: z.string({ required_error: "First Name is required." }).regex(/^[a-zA-Z0-9']*$/, { message: "Only alphabets and digits are allowed." }),
   lastName: z.string({ required_error: "Last Name is required." }).regex(/^[a-zA-Z0-9']*$/, { message: "Only alphabets and digits are allowed." }),
-  dob: z.date({ invalid_type_error: "Date has to be in MM/dd/yyyy format.", required_error: "Date of Birth is required." }),
+  // dob: z.string().date(),
+  dob: z.date({ invalid_type_error: "Date has to be in mm/DD/yyyy or mm-DD-yyyy format. from zod.", required_error: "Date of Birth is required." }),
   // .string({ required_error: "Date of Birth is required." })
   // .regex(/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0,1,2])\/(19|20)\d{2}$/, { message: "Date has to be in MM/dd/yyyy format." }),
   gender: z.enum(GENDER),
@@ -278,7 +279,8 @@ export const UpdateRecordWithRelationshipSchema = z.object({
   relationship: z.enum(RELATIONSHIP),
   firstName: z.string({ required_error: "First Name is required." }).regex(/^[a-zA-Z0-9']*$/, { message: "Only alphabets and digits are allowed." }),
   lastName: z.string({ required_error: "Last Name is required." }).regex(/^[a-zA-Z0-9']*$/, { message: "Only alphabets and digits are allowed." }),
-  dob: z.date({ invalid_type_error: "Date has to be in MM/dd/yyyy format.", required_error: "Date of Birth is required." }),
+  // dob: z.string().date(),
+  dob: z.date({ invalid_type_error: "Date has to be in YYYY-MM-DD format.", required_error: "Date of Birth is required." }),
   // .string({ required_error: "Date of Birth is required." })
   // .regex(/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0,1,2])\/(19|20)\d{2}$/, { message: "Date has to be in MM/dd/yyyy format." }),
   gender: z.enum(GENDER),

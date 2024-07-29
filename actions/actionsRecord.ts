@@ -460,6 +460,8 @@ export const updateRecordWithRelationship = async (
   const { id, userId, relationship, firstName, lastName, dob, gender, telephone, hispanic, hispanicOther, race, raceOther, otherStay } =
     validatedFields.data;
 
+  console.log(`dob = ${dob}`);
+
   const result1 = await getHouseholdByUserId(userId);
   if (!result1.household) {
     if (result1.code == 401) return { error: "You don't have permission to save record under someone's household", code: 401 };

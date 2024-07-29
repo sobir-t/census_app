@@ -52,7 +52,7 @@ export default function UpdateRecordDialog({ user, recordWithRelationship, setEd
       relationship: recordWithRelationship?.relative?.relationship || "",
       firstName: recordWithRelationship?.record?.firstName || "",
       lastName: recordWithRelationship?.record?.lastName || "",
-      dob: recordWithRelationship?.record?.dob || "",
+      dob: recordWithRelationship?.record?.dob,
       gender: recordWithRelationship?.record?.gender || "",
       telephone: recordWithRelationship?.record?.telephone || undefined,
       hispanic: recordWithRelationship?.record?.hispanic || "",
@@ -77,6 +77,7 @@ export default function UpdateRecordDialog({ user, recordWithRelationship, setEd
         });
       else
         updateRecordWithRelationship({ id: recordWithRelationship.record.id, ...values }).then((data) => {
+          console.log(data);
           if (data.error) setError(data.error);
           else {
             setSuccess(data.success);
@@ -178,14 +179,23 @@ export default function UpdateRecordDialog({ user, recordWithRelationship, setEd
                 control={form.control}
                 name="dob"
                 render={({ field }) => (
-                  <FormItem className="sm:col-span-12 items-center justify-between inline-flex space-y-0">
+                  <FormItem className="sm:col-span-6">
                     <FormLabel>Date of birth</FormLabel>
                     <Popover>
                       <PopoverTrigger>
                         <FormControl>
                           <Input
-                            className={cn("w-64 pl-3 text-left font-normal")}
-                            value={field.value ? format(field.value, "MM/dd/yyyy") : "Pick a date"}
+                            className={cn("pl-3 text-left font-normal")}
+                            placeholder={"Pick a date"}
+                            value={!field.value ? null : field.value instanceof Date ? format(field.value, "MM/dd/yyyy") : field.value}
+                            onChange={(e) => {
+                              console.log(`e.target.value = ${e.target.value}`);
+                              if (e.target.value.match(/^(0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])[\/\-]\d{4}$/)) {
+                                field.onChange(new Date(e.target.value));
+                              } else {
+                                field.onChange(e.target.value);
+                              }
+                            }}
                           ></Input>
                           {/* <Button variant={"outline"} className={cn("w-64 pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>
                              {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
@@ -198,7 +208,9 @@ export default function UpdateRecordDialog({ user, recordWithRelationship, setEd
                         <Calendar
                           mode="single"
                           selected={field.value}
-                          onSelect={field.onChange}
+                          onSelect={(date) => {
+                            field.onChange(date);
+                          }}
                           disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
                           initialFocus
                         />
@@ -210,16 +222,25 @@ export default function UpdateRecordDialog({ user, recordWithRelationship, setEd
               />
               <FormField
                 control={form.control}
+                name="telephone"
+                render={({ field }) => (
+                  <FormItem className="sm:col-span-6">
+                    <FormLabel>Telephone</FormLabel>
+                    <FormControl>
+                      <Input id="telephone" {...field} disabled={isPending} placeholder="optional"></Input>
+                    </FormControl>
+                    <FormMessage></FormMessage>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="gender"
                 render={({ field }) => (
                   <FormItem className="sm:col-span-12 inline-flex space-x-5 space-y-0 my-2">
                     <FormLabel>Gender</FormLabel>
                     <FormControl>
-                      <RadioGroup
-                        onValueChange={field.onChange}
-                        // defaultValue={field.value}
-                        className="inline-flex space-x-2 space-y-0"
-                      >
+                      <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="inline-flex space-x-2 space-y-0">
                         <FormItem className="inline-flex space-x-3 space-y-0">
                           <FormControl>
                             <RadioGroupItem value="MALE" />
@@ -235,19 +256,6 @@ export default function UpdateRecordDialog({ user, recordWithRelationship, setEd
                       </RadioGroup>
                     </FormControl>
                     <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="telephone"
-                render={({ field }) => (
-                  <FormItem className="sm:col-span-12 inline-flex items-center space-x-5 space-y-0">
-                    <FormLabel>Telephone</FormLabel>
-                    <FormControl>
-                      <Input id="telephone" {...field} disabled={isPending} placeholder="optional"></Input>
-                    </FormControl>
-                    <FormMessage></FormMessage>
                   </FormItem>
                 )}
               />
