@@ -2,11 +2,10 @@
 
 import * as z from "zod";
 import bcrypt from "bcryptjs";
-import { dbGetUserByEmail, dbGetUserById, dbSaveNewUser, dbUpdatePassword, dbUpdateUser } from "@/data/dbUsers";
+import { dbDeleteUserById, dbGetUserByEmail, dbGetUserById, dbSaveNewUser, dbUpdatePassword, dbUpdateUser } from "@/data/dbUsers";
 import { RegisterUserSchema, UpdatePasswordSchema, UpdateUserSchema } from "@/schemas";
-import { auth } from "@/auth";
 import { User } from "@prisma/client";
-import { AuthUser } from "@/types/types";
+import { AuthUser, Obj } from "@/types/types";
 import { getAuthUser } from "./actionsAuth";
 
 /**
@@ -20,7 +19,7 @@ import { getAuthUser } from "./actionsAuth";
  * @returns Promise<{ success?: string; user?: User; error?: string; data?: any; db_error?: string; code: number }>
  */
 export const register = async (
-  values: z.infer<typeof RegisterUserSchema>
+  values: Obj
 ): Promise<{ success?: string; user?: User; error?: string; data?: any; db_error?: string; code: number }> => {
   const validatedFields = RegisterUserSchema.safeParse(values);
 
@@ -51,14 +50,8 @@ export const register = async (
 
 /**
  * Update user data. Validate if user authorized
- * @param values {
- *   id: number,
- *   email: email format,
- *   password: string min 6, max 20 characters
- *   name: string,
- *   image: string url to avatar image,
-}
- * @returns Promise<{ success?: string; user?: User; error?: string; data?: any; db_error?: string; code: number }>
+ * @param values is and object of
+ * { id: number, email: email format, password: string min 6, max 20 characters, name: string, image: string url to avatar image }
  */
 export const updateUser = async (
   values: z.infer<typeof UpdateUserSchema>
@@ -81,18 +74,36 @@ export const updateUser = async (
 };
 
 /**
+ * Deleting user by id. If no id provided returns error message. Validates if user authorized.
+ * @param id number
+ */
+export const deleteUserById = async (id: number | undefined): Promise<{ success?: string; error?: string; db_error?: string; code: number }> => {
+  if (typeof id != "number") return { error: "parameter id for user's id is required and must be a number.", code: 403 };
+
+  const authUser: AuthUser = await getAuthUser();
+  if (id != parseInt(authUser.id as string) && authUser.role != "ADMIN")
+    return { error: "You don't have permission to delete somebody's user.", code: 403 };
+
+  const userExist = await dbGetUserById(id);
+  if (!userExist) return { error: `no user found by id '${id}'.`, code: 404 };
+
+  const { user, db_error } = await dbDeleteUserById(id);
+  if (!user || db_error) return { error: `Failed to delete user by id '${id}'.`, db_error, code: 500 };
+  return { success: `Successfully deleted user by id '${id}'.`, code: 201 };
+};
+
+/**
  * Update password for user by id. Can be perform by user by matching old password. \
  * ADMIN user can update password without providing old password. Validate id user authorized
- * @param values {
+ * @param values is and object of {
  *    id: number,
- *    oldPassword: string | null
+ *    oldPassword: string | null,
  *    newPassword: string
  * }
- * @returns Promise<{ success?: string; user?: User; error?: string; data?: any; db_error?: string; code: number }>
  */
 export const updatePassword = async (
   values: z.infer<typeof UpdatePasswordSchema>
-): Promise<{ success?: string; user?: User; error?: string; data?: any; db_error?: string; code: number }> => {
+): Promise<{ success?: string; error?: string; data?: any; db_error?: string; code: number }> => {
   const validatedFields = UpdatePasswordSchema.safeParse(values);
   if (!validatedFields.success) return { error: "Invalid fields!", data: validatedFields.error?.errors, code: 403 };
 

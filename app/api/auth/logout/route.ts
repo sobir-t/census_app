@@ -18,5 +18,5 @@ export async function POST(request: NextRequest) {
     }
     throw error;
   }
-  return NextResponse.json({ success: "Successfull log out." }, { status: 200 });
+  return NextResponse.json({ success: "Successful log out." }, { status: 200 });
 }

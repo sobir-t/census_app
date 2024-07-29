@@ -115,6 +115,15 @@ export const dbUpdateUser = async ({
   }
 };
 
+export const dbDeleteUserById = async (id: number): Promise<{ user?: User; db_error?: string }> => {
+  try {
+    const user = await db.user.delete({ where: { id } });
+    return { user };
+  } catch (e: any) {
+    return { db_error: e.message };
+  }
+};
+
 export const dbUpdatePassword = async ({ id, password }: { id: number; password: string }): Promise<{ user?: User; db_error?: string }> => {
   try {
     const user = await db.user.update({
