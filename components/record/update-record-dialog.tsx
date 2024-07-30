@@ -52,7 +52,7 @@ export default function UpdateRecordDialog({ user, recordWithRelationship, setEd
       relationship: recordWithRelationship?.relative?.relationship || "",
       firstName: recordWithRelationship?.record?.firstName || "",
       lastName: recordWithRelationship?.record?.lastName || "",
-      dob: recordWithRelationship?.record?.dob,
+      dob: recordWithRelationship?.record?.dob ? format(recordWithRelationship.record.dob, "MM/dd/yyyy") : undefined,
       gender: recordWithRelationship?.record?.gender || "",
       telephone: recordWithRelationship?.record?.telephone || undefined,
       hispanic: recordWithRelationship?.record?.hispanic || "",
@@ -187,15 +187,8 @@ export default function UpdateRecordDialog({ user, recordWithRelationship, setEd
                           <Input
                             className={cn("pl-3 text-left font-normal")}
                             placeholder={"Pick a date"}
-                            value={!field.value ? null : field.value instanceof Date ? format(field.value, "MM/dd/yyyy") : field.value}
-                            onChange={(e) => {
-                              console.log(`e.target.value = ${e.target.value}`);
-                              if (e.target.value.match(/^(0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])[\/\-]\d{4}$/)) {
-                                field.onChange(new Date(e.target.value));
-                              } else {
-                                field.onChange(e.target.value);
-                              }
-                            }}
+                            value={field.value || null}
+                            onChange={field.onChange}
                           ></Input>
                           {/* <Button variant={"outline"} className={cn("w-64 pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>
                              {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
@@ -207,9 +200,9 @@ export default function UpdateRecordDialog({ user, recordWithRelationship, setEd
                       <PopoverContent className="w-auto p-0" align="start">
                         <Calendar
                           mode="single"
-                          selected={field.value}
+                          selected={new Date(field.value) || Date.now()}
                           onSelect={(date) => {
-                            field.onChange(date);
+                            field.onChange(format(date as Date, "MM/dd/yyyy"));
                           }}
                           disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
                           initialFocus

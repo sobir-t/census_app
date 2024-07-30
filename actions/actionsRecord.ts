@@ -125,7 +125,7 @@ export const saveRecord = async (
   const { record, db_error } = await dbSaveRecord({
     firstName,
     lastName,
-    dob,
+    dob: new Date(dob),
     gender,
     telephone: telephone || null,
     householdId,
@@ -183,7 +183,7 @@ export const updateRecord = async (
     id,
     firstName,
     lastName,
-    dob,
+    dob: new Date(dob),
     gender,
     telephone: telephone || null,
     householdId,
@@ -401,7 +401,7 @@ export const saveRecordWithRelationship = async (
   const { record, db_error } = await dbSaveRecord({
     firstName,
     lastName,
-    dob,
+    dob: new Date(dob),
     gender,
     telephone: telephone || null,
     householdId: result1.household.id,
@@ -460,8 +460,6 @@ export const updateRecordWithRelationship = async (
   const { id, userId, relationship, firstName, lastName, dob, gender, telephone, hispanic, hispanicOther, race, raceOther, otherStay } =
     validatedFields.data;
 
-  console.log(`dob = ${dob}`);
-
   const result1 = await getHouseholdByUserId(userId);
   if (!result1.household) {
     if (result1.code == 401) return { error: "You don't have permission to save record under someone's household", code: 401 };
@@ -477,7 +475,7 @@ export const updateRecordWithRelationship = async (
     id,
     firstName,
     lastName,
-    dob,
+    dob: new Date(dob),
     gender,
     telephone: telephone || null,
     householdId: result1.household.id,
