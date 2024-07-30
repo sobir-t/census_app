@@ -81,7 +81,7 @@ export default function HouseholdCard({ user }: AddressCardProps) {
           </div>
         ) : (
           <div className="flex flex-col pt-1">
-            <p>You have not entered your household yet</p>
+            <p>You haven't entered your household yet</p>
           </div>
         )}
       </div>

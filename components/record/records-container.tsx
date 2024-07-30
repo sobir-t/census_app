@@ -1,3 +1,4 @@
+import { Record } from "@prisma/client";
 import { useEffect, useState } from "react";
 import LoadingCard from "../household/loading-card";
 import RecordCard from "./record-card";
@@ -17,17 +18,17 @@ export default function RecordsContainer({ user }: RecordsContainerProps) {
   useEffect(() => {
     if (!editRecordDialogOpen) {
       setLoading(true);
-      getRecordsWithRelativesInfoUnderUserId(parseInt(user.id as string))
-        .then((data) => {
-          if (data.recordsWithRelationship) {
-            setRecordsWithRelationship(data.recordsWithRelationship);
-          }
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+        getRecordsWithRelativesInfoUnderUserId(parseInt(user.id as string))
+          .then((data) => {
+            if (data.recordsWithRelationship) {
+              setRecordsWithRelationship(data.recordsWithRelationship);
+            }
+          })
+          .finally(() => {
+            setLoading(false);
+          });
     }
-  }, [editRecordDialogOpen, user.id]);
+  }, [editRecordDialogOpen]);
 
   return (
     <div className={"records-container w-full mt-4 grid sm:grid-cols-12 gap-2"}>
