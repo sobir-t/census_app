@@ -1,4 +1,4 @@
-// /api/users/id/[id]
+// /api/user/id/[id]
 
 import { dbGetUserById } from "@/data/dbUsers";
 import { NextResponse } from "next/server";

@@ -1,3 +1,5 @@
+// /api/user
+
 import { deleteUserById, updateUser } from "@/actions/actionsUser";
 
 export async function PATCH(request: Request) {

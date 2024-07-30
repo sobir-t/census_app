@@ -23,11 +23,12 @@ import { AuthUser, RecordWithRelationship } from "@/types/types";
 /**
  * Returns records under household by householdId. Validates if user authorized
  * @param householdId number
- * @returns Promise<{ success?: string; records?: Record[]; error?: string; data?: any; db_error?: string; code: number }>
  */
 export const getRecordsUnderHouseholdId = async (
-  householdId: number
-): Promise<{ success?: string; records?: Record[]; error?: string; data?: any; db_error?: string; code: number }> => {
+  householdId: number | undefined
+): Promise<{ success?: string; records?: Record[]; error?: string; db_error?: string; code: number }> => {
+  if (typeof householdId != "number") return { error: "household id is required and must be number", code: 403 };
+
   const result = await getHouseholdById(householdId); // Validates if user authorized
   if (!result.household) return result;
 
@@ -40,12 +41,13 @@ export const getRecordsUnderHouseholdId = async (
 
 /**
  * Returns records under user user by userId. Validates if user authorized
- * @param userId
- * @returns Promise<{ success?: string; records?: Record[]; error?: string; data?: any; db_error?: string; code: number }>
+ * @param userId number
  */
 export const getRecordsUnderUserId = async (
-  userId: number
+  userId: number | undefined
 ): Promise<{ success?: string; records?: Record[]; error?: string; data?: any; db_error?: string; code: number }> => {
+  if (typeof userId != "number") return { error: "user id is required and must be number", code: 403 };
+
   const result = await getHouseholdByUserId(userId); // Validates if user authorized
   if (!result.household) return result;
 
@@ -59,11 +61,12 @@ export const getRecordsUnderUserId = async (
 /**
  * Returns record by id. Validates if user authorized
  * @param recordId number
- * @returns Promise<{ success?: string; record?: Record; error?: string; data?: any; db_error?: string; code: number }>
  */
 export const getRecordById = async (
-  recordId: number
+  recordId: number | undefined
 ): Promise<{ success?: string; record?: Record; error?: string; data?: any; db_error?: string; code: number }> => {
+  if (typeof recordId != "number") return { error: "record id is required and must be number", code: 403 };
+
   const authUser: AuthUser = await getAuthUser();
 
   if (authUser.role != "ADMIN") {
@@ -87,28 +90,20 @@ export const getRecordById = async (
 
 /**
  * Saves record under household by householdId provided in arguments object. Validates if user authorized
- * @param values {
- *   firstName: string,
- *   lastName: string,
- *   dob: Date,
- *   gender: "MALE" | "FEMALE",
- *   telephone: number | undefined,
- *   householdId: number,
- *   hispanic: "NO" | "MEXICAN" | "PUERTO_RICAN" | "CUBAN" | "OTHER" | "NO_ANSWER",
- *   hispanicOther: string | undefined
+ * @param values is an object of { firstName: string, lastName: string, dob: "MM/dd/yyyy",
+ *   gender: "MALE" | "FEMALE", telephone: number | undefined, householdId: number,
+ *   hispanic: "NO" | "MEXICAN" | "PUERTO_RICAN" | "CUBAN" | "OTHER" | "NO_ANSWER", hispanicOther: string | undefined
  *   race: "WHITE" | "BLACK" | "CHINESE" | "FILIPINO" | "ASIAN_INDIAN" | \
  *         "VIETNAMESE" | "KOREAN" | "JAPANESE" | "OTHER_ASIAN" | "NATIVE_HAWAIIAN" | \
  *         "SAMOAN" | "CHAMORRO" | "OTHER_PACIFIC" | "OTHER" | "NO_ANSWER",
  *   raceOther: string | undefined,
  *   otherStay: "NO" | "COLLEGE" | "MILITARY_ASSIGNMENT" | "JOB_OR_BUSINESS" | "NURSING_HOME" | \
  *              "WITH_PARENT_OR_OTHER_RELATIVE" | "SEASONAL_OR_SECOND_RESIDENT" | \
- *              "JAIL_OR_PRISON" | "OTHER",
- * }
- * @returns Promise<{ success?: string; records?: Record[]; error?: string; data?: any; db_error?: string; code: number }>
+ *              "JAIL_OR_PRISON" | "OTHER", }
  */
 export const saveRecord = async (
   values: z.infer<typeof RecordSchema>
-): Promise<{ success?: string; records?: Record[]; error?: string; data?: any; db_error?: string; code: number }> => {
+): Promise<{ success?: string; record?: Record; error?: string; data?: any; db_error?: string; code: number }> => {
   const validatedFields = RecordSchema.safeParse(values);
   console.log(JSON.stringify(validatedFields.error?.errors, null, 2));
   if (!validatedFields.success) return { error: "Invalid fields!", data: validatedFields.error?.errors, code: 403 };
@@ -137,19 +132,13 @@ export const saveRecord = async (
   });
   if (!record || db_error) return { error: "Failed to save new record.", db_error, code: 500 };
 
-  return { success: "Successfully saved new record.", code: 201 };
+  return { success: "Successfully saved new record.", record, code: 201 };
 };
 
 /**
  * Update record by id under household by householdId. Validates if user authorized
- * @param values {
- *   id: number,
- *   firstName: string,
- *   lastName: string,
- *   dob: Date,
- *   gender: "MALE" | "FEMALE",
- *   telephone: number | undefined,
- *   householdId: number,
+ * @param values is object of { id: number, firstName: string, lastName: string,
+ *   dob: "MM/dd/yyyy", gender: "MALE" | "FEMALE", telephone: number | undefined, householdId: number,
  *   hispanic: "NO" | "MEXICAN" | "PUERTO_RICAN" | "CUBAN" | "OTHER" | "NO_ANSWER",
  *   hispanicOther: string | undefined
  *   race: "WHITE" | "BLACK" | "CHINESE" | "FILIPINO" | "ASIAN_INDIAN" | \
@@ -158,13 +147,11 @@ export const saveRecord = async (
  *   raceOther: string | undefined,
  *   otherStay: "NO" | "COLLEGE" | "MILITARY_ASSIGNMENT" | "JOB_OR_BUSINESS" | "NURSING_HOME" | \
  *              "WITH_PARENT_OR_OTHER_RELATIVE" | "SEASONAL_OR_SECOND_RESIDENT" | \
- *              "JAIL_OR_PRISON" | "OTHER",
- * }
- * @returns
+ *              "JAIL_OR_PRISON" | "OTHER", }
  */
 export const updateRecord = async (
   values: z.infer<typeof UpdateRecordSchema>
-): Promise<{ success?: string; records?: Record[]; error?: string; data?: any; db_error?: string; code: number }> => {
+): Promise<{ success?: string; record?: Record; error?: string; data?: any; db_error?: string; code: number }> => {
   const validatedFields = UpdateRecordSchema.safeParse(values);
   console.log(JSON.stringify(validatedFields.error?.errors, null, 2));
   if (!validatedFields.success) return { error: "Invalid fields!", data: validatedFields.error?.errors, code: 403 };
@@ -195,19 +182,18 @@ export const updateRecord = async (
   });
   if (!record || db_error) return { error: "Failed to update record.", db_error, code: 500 };
 
-  return { success: "Successfully updated record.", code: 201 };
+  return { success: "Successfully updated record.", record, code: 201 };
 };
 
 /**
  * Delete record by id. Validates if user authorized
  * @param recordId number
- * @returns Promise<{ success?: string; records?: Record[]; error?: string; data?: any; db_error?: string; code: number }>
  */
-export const deleteRecordById = async ({
-  recordId,
-}: {
-  recordId: number;
-}): Promise<{ success?: string; records?: Record[]; error?: string; data?: any; db_error?: string; code: number }> => {
+export const deleteRecordById = async (
+  recordId: number | undefined
+): Promise<{ success?: string; error?: string; db_error?: string; code: number }> => {
+  if (typeof recordId != "number") return { error: "record id is required and must be number", code: 403 };
+
   const currentUser: AuthUser = await getAuthUser();
   const isAdmin: boolean = currentUser.role == "ADMIN";
   const result1 = await dbGetRecordById(recordId);
@@ -224,6 +210,7 @@ export const deleteRecordById = async ({
   // if record in under user's household or user is admin then record is allowed to be deleted
   const { record, db_error } = await dbDeleteRecordById(recordId);
   if (!record || db_error) return { error: "Failed to delete record.", db_error, code: 500 };
+  console.log(record);
 
   return { success: "Successfully deleted record.", code: 201 };
 };
@@ -231,11 +218,12 @@ export const deleteRecordById = async ({
 /**
  * Delete all records under household by householdId. Validates if user authorized
  * @param householdId number
- * @returns Promise<{ success?: string; records?: Record[]; error?: string; data?: any; db_error?: string; code: number }>
  */
 export const deleteRecordsUnderHouseholdId = async (
-  householdId: number
-): Promise<{ success?: string; records?: Record[]; error?: string; data?: any; db_error?: string; code: number }> => {
+  householdId: number | undefined
+): Promise<{ success?: string; error?: string; db_error?: string; code: number }> => {
+  if (typeof householdId != "number") return { error: "household id is required and must be number", code: 403 };
+
   const currentUser: AuthUser = await getAuthUser();
   const isAdmin: boolean = currentUser.role == "ADMIN";
 
@@ -259,11 +247,12 @@ export const deleteRecordsUnderHouseholdId = async (
 /**
  * Returns relatives information under user by id. Validates if user authorized
  * @param userId number
- * @returns Promise<{ success?: string; relatives?: Relative[]; error?: string; data?: any; db_error?: string; code: number }>
  */
 export const getRelativesUnderUserId = async (
-  userId: number
-): Promise<{ success?: string; relatives?: Relative[]; error?: string; data?: any; db_error?: string; code: number }> => {
+  userId: number | undefined
+): Promise<{ success?: string; relatives?: Relative[]; error?: string; db_error?: string; code: number }> => {
+  if (typeof userId != "number") return { error: "user id is required and must be number", code: 403 };
+
   const authUser: AuthUser = await getAuthUser();
   if (userId != parseInt(authUser.id as string) && authUser.role != "ADMIN")
     return { error: "You don't have permission to get someone's relatives", code: 401 };
@@ -276,14 +265,11 @@ export const getRelativesUnderUserId = async (
 
 /**
  * Saves new relative information. Validates if user authorized
- * @param newRelative {
- *   userId: number;
+ * @param newRelative is object of { userId: number;
  *   relationship: "SELF" | "SPOUSE" | "PARTNER" | "BIOLOGICAL_CHILD" | "ADOPTED_CHILD" | \
  *                 "STEP_CHILD" | "COSINE" | "PARENT" | "GRANDCHILD" | "GRANDPARENT" | \
  *                 "OTHER_RELATIVE" | "OTHER_NON_RELATIVE" | "ROOMMATE_HOUSEMATE";
- *   recordId: number;
- * }
- * @returns
+ *   recordId: number; }
  */
 export const saveRelativeInfo = async (
   newRelative: Omit<Relative, "id">
@@ -299,15 +285,11 @@ export const saveRelativeInfo = async (
 
 /**
  * Updates existing relative information. Validates if user authorized
- * @param newRelative {
- *   id: number;
- *   userId: number;
+ * @param newRelative is object of { id: number; userId: number;
  *   relationship: "SELF" | "SPOUSE" | "PARTNER" | "BIOLOGICAL_CHILD" | "ADOPTED_CHILD" | \
  *                 "STEP_CHILD" | "COSINE" | "PARENT" | "GRANDCHILD" | "GRANDPARENT" | \
  *                 "OTHER_RELATIVE" | "OTHER_NON_RELATIVE" | "ROOMMATE_HOUSEMATE";
- *   recordId: number;
- * }
- * @returns Promise<{ success?: string; relative?: Relative; error?: string; data?: any; db_error?: string; code: number }>
+ *   recordId: number; }
  */
 export const updateRelativeInfo = async (
   newRelative: Relative
@@ -323,12 +305,13 @@ export const updateRelativeInfo = async (
 
 /**
  * Returns records with relationship under user user by userId. Validates if user authorized
- * @param userId
- * @returns Promise<{ success?: string; recordsWithRelationship?: RecordWithRelationship[]; error?: string; data?: any; db_error?: string; code: number }>
+ * @param userId number
  */
 export const getRecordsWithRelativesInfoUnderUserId = async (
-  userId: number
-): Promise<{ success?: string; recordsWithRelationship?: RecordWithRelationship[]; error?: string; data?: any; db_error?: string; code: number }> => {
+  userId: number | undefined
+): Promise<{ success?: string; recordsWithRelationship?: RecordWithRelationship[]; error?: string; db_error?: string; code: number }> => {
+  if (typeof userId != "number") return { error: "user id is required and must be number", code: 403 };
+
   const result = await getHouseholdByUserId(userId); // Validates if user authorized
   if (!result.household) return result;
 
@@ -356,16 +339,11 @@ export const getRecordsWithRelativesInfoUnderUserId = async (
 
 /**
  * Saves record with relationship info under household by userId provided in arguments object. Validates if user authorized
- * @param values {
- *   userId: number,
+ * @param values is object of { userId: number,
  *   relationship: "SELF" | "SPOUSE" | "PARTNER" | "BIOLOGICAL_CHILD" | "ADOPTED_CHILD" | \
  *                 "STEP_CHILD" | "COSINE" | "PARENT" | "GRANDCHILD" | "GRANDPARENT" | \
  *                 "OTHER_RELATIVE" | "OTHER_NON_RELATIVE" | "ROOMMATE_HOUSEMATE";
- *   firstName: string,
- *   lastName: string,
- *   dob: Date,
- *   gender: "MALE" | "FEMALE",
- *   telephone: number | undefined,
+ *   firstName: string, lastName: string, dob: "MM/dd/yyyy", gender: "MALE" | "FEMALE", telephone: number | undefined,
  *   hispanic: "NO" | "MEXICAN" | "PUERTO_RICAN" | "CUBAN" | "OTHER" | "NO_ANSWER",
  *   hispanicOther: string | undefined
  *   race: "WHITE" | "BLACK" | "CHINESE" | "FILIPINO" | "ASIAN_INDIAN" | \
@@ -374,13 +352,11 @@ export const getRecordsWithRelativesInfoUnderUserId = async (
  *   raceOther: string | undefined,
  *   otherStay: "NO" | "COLLEGE" | "MILITARY_ASSIGNMENT" | "JOB_OR_BUSINESS" | "NURSING_HOME" | \
  *              "WITH_PARENT_OR_OTHER_RELATIVE" | "SEASONAL_OR_SECOND_RESIDENT" | \
- *              "JAIL_OR_PRISON" | "OTHER",
- * }
- * @returns Promise<{ success?: string; error?: string; data?: any; db_error?: string; code: number }>
+ *              "JAIL_OR_PRISON" | "OTHER", }
  */
 export const saveRecordWithRelationship = async (
   values: z.infer<typeof RecordWithRelationshipSchema>
-): Promise<{ success?: string; error?: string; data?: any; db_error?: string; code: number }> => {
+): Promise<{ success?: string; recordWithRelationship?: RecordWithRelationship; error?: string; data?: any; db_error?: string; code: number }> => {
   const validatedFields = RecordWithRelationshipSchema.safeParse(values);
   console.log(JSON.stringify(validatedFields.error?.errors, null, 2));
   if (!validatedFields.success) return { error: "Invalid fields!", data: validatedFields.error?.errors, code: 403 };
@@ -422,22 +398,17 @@ export const saveRecordWithRelationship = async (
   });
   if (!result3.relative || result3.db_error) return { error: "failed to assign relationship, but record is saved, please edit it.", code: 500 };
 
-  return { success: `Successfully saved new record for '${relationship}'`, code: 201 };
+  const recordWithRelationship: RecordWithRelationship = { record, relative: result3.relative };
+  return { success: `Successfully saved new record for '${relationship}'`, recordWithRelationship, code: 201 };
 };
 
 /**
  * Updates record with relationship info under household by userId and record id provided in arguments object. Validates if user authorized
- * @param values {
- *   id: number,
- *   userId: number,
+ * @param values is object of { id: number, userId: number,
  *   relationship: "SELF" | "SPOUSE" | "PARTNER" | "BIOLOGICAL_CHILD" | "ADOPTED_CHILD" | \
  *                 "STEP_CHILD" | "COSINE" | "PARENT" | "GRANDCHILD" | "GRANDPARENT" | \
  *                 "OTHER_RELATIVE" | "OTHER_NON_RELATIVE" | "ROOMMATE_HOUSEMATE";
- *   firstName: string,
- *   lastName: string,
- *   dob: Date,
- *   gender: "MALE" | "FEMALE",
- *   telephone: number | undefined,
+ *   firstName: string, lastName: string, dob: "MM/dd/yyyy", gender: "MALE" | "FEMALE", telephone: number | undefined,
  *   hispanic: "NO" | "MEXICAN" | "PUERTO_RICAN" | "CUBAN" | "OTHER" | "NO_ANSWER",
  *   hispanicOther: string | undefined
  *   race: "WHITE" | "BLACK" | "CHINESE" | "FILIPINO" | "ASIAN_INDIAN" | \
@@ -446,13 +417,11 @@ export const saveRecordWithRelationship = async (
  *   raceOther: string | undefined,
  *   otherStay: "NO" | "COLLEGE" | "MILITARY_ASSIGNMENT" | "JOB_OR_BUSINESS" | "NURSING_HOME" | \
  *              "WITH_PARENT_OR_OTHER_RELATIVE" | "SEASONAL_OR_SECOND_RESIDENT" | \
- *              "JAIL_OR_PRISON" | "OTHER",
- * }
- * @returns Promise<{ success?: string; error?: string; data?: any; db_error?: string; code: number }>
+ *              "JAIL_OR_PRISON" | "OTHER", }
  */
 export const updateRecordWithRelationship = async (
   values: z.infer<typeof UpdateRecordWithRelationshipSchema>
-): Promise<{ success?: string; error?: string; data?: any; db_error?: string; code: number }> => {
+): Promise<{ success?: string; recordWithRelationship?: RecordWithRelationship; error?: string; data?: any; db_error?: string; code: number }> => {
   const validatedFields = UpdateRecordWithRelationshipSchema.safeParse(values);
   console.log(JSON.stringify(validatedFields.error?.errors, null, 2));
   if (!validatedFields.success) return { error: "Invalid fields!", data: validatedFields.error?.errors, code: 403 };
@@ -501,5 +470,6 @@ export const updateRecordWithRelationship = async (
   }
   if (!result3.relative || result3.db_error) return { error: "failed to assign relationship, but record is updated, please edit it.", code: 500 };
 
-  return { success: `Successfully updated record for '${relationship}'`, code: 201 };
+  const recordWithRelationship: RecordWithRelationship = { record, relative: result3.relative };
+  return { success: `Successfully updated record for '${relationship}'`, recordWithRelationship, code: 201 };
 };

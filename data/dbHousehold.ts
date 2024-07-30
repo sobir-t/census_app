@@ -149,3 +149,25 @@ export const dbUpdateLienholder = async ({
     return { db_error: e.message };
   }
 };
+
+export const dbDeleteLienholderById = async (id: number): Promise<{ lienholder?: Lienholder | null; db_error?: string }> => {
+  try {
+    const lienholder = await db.lienholder.delete({
+      where: { id },
+    });
+    return { lienholder };
+  } catch (e: any) {
+    return { db_error: e.message };
+  }
+};
+
+export const dbDeleteLienholderByName = async (name: string): Promise<{ lienholder?: Lienholder | null; db_error?: string }> => {
+  try {
+    const lienholder = await db.lienholder.delete({
+      where: { name },
+    });
+    return { lienholder };
+  } catch (e: any) {
+    return { db_error: e.message };
+  }
+};

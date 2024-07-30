@@ -10,13 +10,8 @@ import { getAuthUser } from "./actionsAuth";
 
 /**
  * Register new user. No user authorization
- * @param values {
- *   email: email format,
- *   password: string min 6, max 20 characters
- *   name: string,
- *   image: string url to avatar image,
-}
- * @returns Promise<{ success?: string; user?: User; error?: string; data?: any; db_error?: string; code: number }>
+ * @param values
+ * presented as object { email: email format, password: string min 6, max 20 characters, name: string, image: string url to avatar image }
  */
 export const register = async (
   values: Obj
@@ -95,11 +90,7 @@ export const deleteUserById = async (id: number | undefined): Promise<{ success?
 /**
  * Update password for user by id. Can be perform by user by matching old password. \
  * ADMIN user can update password without providing old password. Validate id user authorized
- * @param values is and object of {
- *    id: number,
- *    oldPassword: string | null,
- *    newPassword: string
- * }
+ * @param values is and object of { id: number, oldPassword: string | null, newPassword: string }
  */
 export const updatePassword = async (
   values: z.infer<typeof UpdatePasswordSchema>

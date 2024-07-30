@@ -3,6 +3,8 @@
 import { z } from "zod";
 import { dbGetUserById, dbUpdateUser } from "@/data/dbUsers";
 import {
+  dbDeleteLienholderById,
+  dbDeleteLienholderByName,
   dbGetAllLienholders,
   dbGetHouseholdById,
   dbGetLienholderById,
@@ -21,7 +23,6 @@ import { getAuthUser } from "./actionsAuth";
 /**
  * Returns Household for given userId. Validates if user authorized.
  * @param userId number
- * @returns Promise<{ success?: string; household?: Household; error?: string; db_error?: string; code: number }>
  */
 export const getHouseholdByUserId = async (
   userId: number
@@ -43,7 +44,6 @@ export const getHouseholdByUserId = async (
 /**
  * Returns Household by householdId. Validate if user authorized
  * @param householdId number
- * @returns Promise<{ success?: string; household?: Household; error?: string; db_error?: string; code: number }>
  */
 export const getHouseholdById = async (
   householdId: number
@@ -61,18 +61,10 @@ export const getHouseholdById = async (
 
 /**
  * Save household and assign used by userId to saved household by householdId. Validate if user authorized
- * @param values {
- *   userId: number,
- *   homeType: "HOUSE" | "APARTMENT" | "MOBILE_HOME" | "SHELTER",
- *   ownership: "MORTGAGE" | "OWN" | "RENT" | "FREE_LIVING",
- *   lienholderId: number | null,
- *   address1: string,
- *   address2: string | undefined,
- *   city: string,
- *   state: state code 2 letters,
- *   zip: string /^\d{5}$/ 5 digits
-}
- * @returns Promise<{ success?: string; household?: Household; error?: string; db_error?: string; data?: any; code: number }>
+ * @param values presented as object of {  userId: number, homeType: "HOUSE" | "APARTMENT" | "MOBILE_HOME" | "SHELTER",
+ *   ownership: "MORTGAGE" | "OWN" | "RENT" | "FREE_LIVING", lienholderId: number | null,
+ *   address1: string, address2: string | undefined, city: string,
+ *   state: state code 2 letters, zip: string /^\d{5}$/ 5 digits }
  */
 export const saveHousehold = async (
   values: z.infer<typeof HouseholdSchema>
@@ -100,18 +92,10 @@ export const saveHousehold = async (
 
 /**
  * Update household by id. Validate if user authorized
- * @param values {
- *   id: number
- *   homeType: "HOUSE" | "APARTMENT" | "MOBILE_HOME" | "SHELTER",
- *   ownership: "MORTGAGE" | "OWN" | "RENT" | "FREE_LIVING",
- *   lienholderId: number | null,
- *   address1: string,
- *   address2: string | undefined,
- *   city: string,
- *   state: state code 2 letters,
- *   zip: string /^\d{5}$/ 5 digits
-}
- * @returns Promise<{ success?: string; household?: Household; error?: string; db_error?: string; data?: any; code: number }>
+ * @param values presented as object of { id: number, userId: number, homeType: "HOUSE" | "APARTMENT" | "MOBILE_HOME" | "SHELTER",
+ *   ownership: "MORTGAGE" | "OWN" | "RENT" | "FREE_LIVING", lienholderId: number | null,
+ *   address1: string, address2: string | undefined, city: string,
+ *   state: state code 2 letters, zip: string /^\d{5}$/ 5 digits }
  */
 export const updateHousehold = async (
   values: z.infer<typeof UpdateHouseholdSchema>
@@ -137,14 +121,12 @@ export const updateHousehold = async (
 
 /**
  * Returns all lienholders in array. No user authorization
- * @returns Promise<{ success?: string; lienholders?: Lienholder[]; error?: string; db_error?: string; data?: any; code: number }>
  */
 export const getAllLienholders = async (): Promise<{
   success?: string;
   lienholders?: Lienholder[];
   error?: string;
   db_error?: string;
-  data?: any;
   code: number;
 }> => {
   const { lienholders, db_error } = await dbGetAllLienholders();
@@ -155,10 +137,9 @@ export const getAllLienholders = async (): Promise<{
 /**
  * Save new lienholder if does not exist already. no user authorization
  * @param name string lienholder name
- * @returns Promise<{ success?: string; lienholder?: Lienholder; error?: string; db_error?: string; data?: any; code: number }>
  */
 export const saveLienholder = async (
-  name: string
+  name: string | undefined
 ): Promise<{
   success?: string;
   lienholder?: Lienholder;
@@ -166,7 +147,7 @@ export const saveLienholder = async (
   db_error?: string;
   code: number;
 }> => {
-  if (!name.length) return { error: "Lienholder name required.", code: 403 };
+  if (typeof name != "string" || !name.length) return { error: "Lienholder name required.", code: 403 };
   const exist = await dbGetLienholderByName(name);
   if (exist.lienholder) return { error: `Lienholder by name '${name}" already exist.`, lienholder: exist.lienholder, code: 403 };
   const { lienholder, db_error } = await dbSaveLienholder(name);
@@ -176,11 +157,7 @@ export const saveLienholder = async (
 
 /**
  * Update lienholder name if new name does not exist already. Only ADMIN user is authorized
- * @param param0 {
- *  id: number;
- *  name: string;
-}
- * @returns Promise<{ success?: string; lienholder?: Lienholder; error?: string; db_error?: string; data?: any; code: number }>
+ * @param param0 presented as object of { id: number; name: string; }
  */
 export const updateLienholder = async ({
   id,
@@ -211,10 +188,9 @@ export const updateLienholder = async ({
 /**
  * Returns lienholder by id. No user authorization
  * @param id number
- * @returns Promise<{ success?: string; lienholder?: Lienholder; error?: string; db_error?: string; data?: any; code: number }>
  */
 export const getLienholderById = async (
-  id: number
+  id: number | undefined
 ): Promise<{
   success?: string;
   lienholder?: Lienholder;
@@ -222,8 +198,63 @@ export const getLienholderById = async (
   db_error?: string;
   code: number;
 }> => {
+  if (typeof id != "number") return { error: "id is required as number", code: 403 };
   const { lienholder, db_error } = await dbGetLienholderById(id);
   if (db_error) return { error: `Failed to find lienholder by id '${id}'.`, db_error, code: 500 };
   if (!lienholder) return { error: `No lienholder found by id '${id}'.`, db_error, code: 404 };
   return { success: "Successfully found lienholder.", lienholder, code: 200 };
+};
+
+/**
+ * Deleting lienholder by id if exist. Only ADMIN user is authorized.
+ * @param id number
+ */
+export const deleteLienholderById = async (
+  id: number | undefined
+): Promise<{
+  success?: string;
+  error?: string;
+  db_error?: string;
+  code: number;
+}> => {
+  const authUser: AuthUser = await getAuthUser();
+  if (authUser.role != "ADMIN") return { error: "You don't have permission to delete lienholder. Please contact ADMIN.", code: 401 };
+
+  if (typeof id != "number") return { error: "id is required", code: 403 };
+
+  const result1 = await dbGetLienholderById(id);
+  if (!result1.lienholder) return { error: `No lienholder found by id '${id}'`, code: 404 };
+
+  const { lienholder, db_error } = await dbDeleteLienholderById(id);
+  if (db_error) return { error: "Something went wrong", db_error, code: 500 };
+  console.log(lienholder);
+
+  return { success: "lienholder deleted successfully.", code: 201 };
+};
+
+/**
+ * Deleting lienholder by name if exist. Only ADMIN user is authorized.
+ * @param name string
+ */
+export const deleteLienholderByName = async (
+  name: string | undefined
+): Promise<{
+  success?: string;
+  error?: string;
+  db_error?: string;
+  code: number;
+}> => {
+  const authUser: AuthUser = await getAuthUser();
+  if (authUser.role != "ADMIN") return { error: "You don't have permission to delete lienholder. Please contact ADMIN.", code: 401 };
+
+  if (typeof name != "string") return { error: "name is required", code: 403 };
+
+  const result1 = await dbGetLienholderByName(name);
+  if (!result1.lienholder) return { error: `No lienholder found by name '${name}'`, code: 404 };
+
+  const { lienholder, db_error } = await dbDeleteLienholderByName(name);
+  if (db_error) return { error: "Something went wrong", db_error, code: 500 };
+  console.log(lienholder);
+
+  return { success: "lienholder deleted successfully.", code: 201 };
 };
