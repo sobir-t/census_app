@@ -18,46 +18,29 @@ export default function HouseholdCard({ user }: AddressCardProps) {
   const [lienholder, setLienholder] = useState<Lienholder | undefined>(undefined);
   const [isEditHouseholdOpen, setEditHouseholdOpen] = useState(false);
 
-  // const getHousehold = () => {
-  //   setLoading(true);
-  //   getHouseholdByUserId(parseInt(user.id as string)).then((data) => {
-  //     setHousehold(data.household as Household);
-  //     if (data.household?.lienholderId) {
-  //       getLienholderById(data.household.lienholderId)
-  //         .then((data) => {
-  //           setLienholder(data.lienholder);
-  //         })
-  //         .finally(() => {
-  //           setLoading(false);
-  //         });
-  //     } else {
-  //       setLienholder(undefined);
-  //       setLoading(false);
-  //     }
-  //   });
-  // };
+  const getHousehold = () => {
+    setLoading(true);
+    getHouseholdByUserId(parseInt(user.id as string)).then((data) => {
+      setHousehold(data.household as Household);
+      if (data.household?.lienholderId) {
+        getLienholderById(data.household.lienholderId)
+          .then((data) => {
+            setLienholder(data.lienholder);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      } else {
+        setLienholder(undefined);
+        setLoading(false);
+      }
+    });
+  };
 
   useEffect(() => {
     console.log(`editHouseholdOpen = ${isEditHouseholdOpen}`);
-    if (!isEditHouseholdOpen) {
-      setLoading(true);
-      getHouseholdByUserId(parseInt(user.id as string)).then((data) => {
-        setHousehold(data.household as Household);
-        if (data.household?.lienholderId) {
-          getLienholderById(data.household.lienholderId)
-            .then((data) => {
-              setLienholder(data.lienholder);
-            })
-            .finally(() => {
-              setLoading(false);
-            });
-        } else {
-          setLienholder(undefined);
-          setLoading(false);
-        }
-      });
-    }
-  }, [isEditHouseholdOpen]);
+    if (!isEditHouseholdOpen) getHousehold();
+  }, [isEditHouseholdOpen, getHousehold]);
 
   return (
     <>
