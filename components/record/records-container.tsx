@@ -45,7 +45,7 @@ export default function RecordsContainer({ user }: RecordsContainerProps) {
         </>
       ) : (
         <div className="no-records-card sm:col-span-6 inline-flex items-center justify-between p-2 border-b-2 rounded-md shadow hover:bg-slate-100">
-          <p>You don't have any records yet.</p>
+          <p>You do not have any records yet.</p>
           <UpdateRecordDialog user={user} recordWithRelationship={undefined} setEditRecordDialogOpen={setEditRecordDialogOpen} />
         </div>
       )}

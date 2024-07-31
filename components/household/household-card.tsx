@@ -40,7 +40,7 @@ export default function HouseholdCard({ user }: AddressCardProps) {
   useEffect(() => {
     console.log(`editHouseholdOpen = ${isEditHouseholdOpen}`);
     if (!isEditHouseholdOpen) getHousehold();
-  }, [isEditHouseholdOpen, getHousehold]);
+  }, [isEditHouseholdOpen]);
 
   return (
     <>
@@ -81,7 +81,7 @@ export default function HouseholdCard({ user }: AddressCardProps) {
           </div>
         ) : (
           <div className="flex flex-col pt-1">
-            <p>You haven't entered your household yet</p>
+            <p>You have not entered your household yet</p>
           </div>
         )}
       </div>
