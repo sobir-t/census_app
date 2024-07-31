@@ -1,8 +1,9 @@
 "use client";
+import { AuthUser } from "@/types/types";
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { User } from "next-auth";
 import { signOut } from "next-auth/react";
+import Image from "next/image";
 
 import { usePathname } from "next/navigation";
 
@@ -25,7 +26,7 @@ interface ProfileProps {
   }[];
 }
 
-export default function Navbar({ user }: { user: User | undefined }) {
+export default function Navbar({ user }: { user: AuthUser | undefined }) {
   const pathname = usePathname();
   let navigation: NavigationProps[] = [
     { name: "About", href: "/", current: pathname == "/" },
@@ -98,7 +99,7 @@ export default function Navbar({ user }: { user: User | undefined }) {
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 <div className="flex flex-shrink-0 items-center">
-                  <img className="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company" />
+                  <Image className="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company" />
                 </div>
                 <div className="nav-bar-buttons hidden sm:ml-6 sm:block">
                   <div className="flex space-x-4">
@@ -138,7 +139,7 @@ export default function Navbar({ user }: { user: User | undefined }) {
                       <span className="absolute -inset-1.5" />
                       <span className="sr-only">Open user menu</span>
                       {/* <Image className="h-8 w-8 rounded-full object-cover" src={profile.src} alt="" width="8" height="8" /> */}
-                      <img className="h-8 w-8 rounded-full" src={profile.src} alt="" />
+                      <Image className="h-8 w-8 rounded-full" src={profile.src} alt="" />
                     </MenuButton>
                   </div>
                   <MenuItems

@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/navbar";
 import { auth } from "@/auth";
 import { cookies } from "next/headers";
+import { AuthUser } from "@/types/types";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,7 +20,7 @@ export default async function RootLayout({
 }>) {
   cookies();
   const session = await auth();
-  const user = session?.user;
+  const user = session?.user as AuthUser;
 
   return (
     <html lang="en">
