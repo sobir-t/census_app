@@ -94,7 +94,7 @@ export const deleteUserById = async (id: number | undefined): Promise<{ success?
  */
 export const updatePassword = async (
   values: z.infer<typeof UpdatePasswordSchema>
-): Promise<{ success?: string; error?: string; data?: any; db_error?: string; code: number }> => {
+): Promise<{ success?: string; user?: User; error?: string; data?: any; db_error?: string; code: number }> => {
   const validatedFields = UpdatePasswordSchema.safeParse(values);
   if (!validatedFields.success) return { error: "Invalid fields!", data: validatedFields.error?.errors, code: 403 };
 
