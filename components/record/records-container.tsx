@@ -17,15 +17,16 @@ export default function RecordsContainer({ user }: RecordsContainerProps) {
   useEffect(() => {
     if (!editRecordDialogOpen) {
       setLoading(true);
-      getRecordsWithRelativesInfoUnderUserId(parseInt(user.id as string))
-        .then((data) => {
-          if (data.recordsWithRelationship) {
-            setRecordsWithRelationship(data.recordsWithRelationship);
-          }
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+      if (user.id)
+        getRecordsWithRelativesInfoUnderUserId(parseInt(user.id as string))
+          .then((data) => {
+            if (data.recordsWithRelationship) {
+              setRecordsWithRelationship(data.recordsWithRelationship);
+            }
+          })
+          .finally(() => {
+            setLoading(false);
+          });
     }
   }, [editRecordDialogOpen]);
 
