@@ -1,4 +1,3 @@
-import { Record } from "@prisma/client";
 import { useEffect, useState } from "react";
 import LoadingCard from "../household/loading-card";
 import RecordCard from "./record-card";

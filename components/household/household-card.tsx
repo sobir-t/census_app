@@ -21,7 +21,7 @@ export default function HouseholdCard({ user }: AddressCardProps) {
   const getHousehold = () => {
     setLoading(true);
     getHouseholdByUserId(parseInt(user.id as string)).then((data) => {
-      setHousehold(data.household);
+      setHousehold(data.household as Household);
       if (data.household?.lienholderId) {
         getLienholderById(data.household.lienholderId)
           .then((data) => {
