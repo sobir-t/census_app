@@ -11,12 +11,12 @@ import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { CardWrapper } from "@/components/auth/card-wrapper";
-import { register } from "@/actions/actionsAuth";
 import Link from "next/link";
 
 import { AvatarDialog } from "@/components/auth/avatar-dialog";
 import { avatarLinks } from "@/lib/avatars";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { register } from "@/actions/actionsUser";
 
 export const RegisterForm = () => {
   const [error, setError] = useState<string | undefined>("");

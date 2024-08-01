@@ -16,7 +16,6 @@ import {
 } from "@/data/dbHousehold";
 import { Household, Lienholder, User } from "@prisma/client";
 import { HouseholdSchema, UpdateHouseholdSchema } from "@/schemas";
-import { auth } from "@/auth";
 import { AuthUser } from "@/types/types";
 import { getAuthUser } from "./actionsAuth";
 
@@ -27,7 +26,9 @@ import { getAuthUser } from "./actionsAuth";
 export const getHouseholdByUserId = async (
   userId: number
 ): Promise<{ success?: string; household?: Household; error?: string; db_error?: string; code: number }> => {
-  const authUser = await getAuthUser();
+  const authUser: AuthUser | null = await getAuthUser();
+  if (!authUser) return { error: "your session expired. please log in", code: 401 };
+
   if (parseInt(authUser.id as string) != userId && authUser.role !== "ADMIN")
     return { error: "You don't have permission to ged someone's household", code: 401 };
 
@@ -48,7 +49,9 @@ export const getHouseholdByUserId = async (
 export const getHouseholdById = async (
   householdId: number
 ): Promise<{ success?: string; household?: Household; error?: string; db_error?: string; code: number }> => {
-  const authUser = await getAuthUser();
+  const authUser: AuthUser | null = await getAuthUser();
+  if (!authUser) return { error: "your session expired. please log in", code: 401 };
+
   const user: User | null = await dbGetUserById(parseInt(authUser.id as string));
   if (user?.householdId !== householdId && authUser.role !== "ADMIN")
     return { error: "You don't have permission to get someone's household", code: 401 };
@@ -75,7 +78,9 @@ export const saveHousehold = async (
 
   const { userId } = validatedFields.data;
 
-  const authUser: AuthUser = await getAuthUser();
+  const authUser: AuthUser | null = await getAuthUser();
+  if (!authUser) return { error: "your session expired. please log in", code: 401 };
+
   if (userId != parseInt(authUser?.id as string) && authUser.role != "ADMIN")
     return { error: "You have no permission to save someone's household.", code: 403 };
 
@@ -172,7 +177,9 @@ export const updateLienholder = async ({
   db_error?: string;
   code: number;
 }> => {
-  const authUser: AuthUser = await getAuthUser();
+  const authUser: AuthUser | null = await getAuthUser();
+  if (!authUser) return { error: "your session expired. please log in", code: 401 };
+
   if (authUser.role != "ADMIN") return { error: "You don't have permission to update lienholder", code: 401 };
 
   if (!name.length) return { error: "Lienholder name required.", code: 403 };
@@ -217,7 +224,9 @@ export const deleteLienholderById = async (
   db_error?: string;
   code: number;
 }> => {
-  const authUser: AuthUser = await getAuthUser();
+  const authUser: AuthUser | null = await getAuthUser();
+  if (!authUser) return { error: "your session expired. please log in", code: 401 };
+
   if (authUser.role != "ADMIN") return { error: "You don't have permission to delete lienholder. Please contact ADMIN.", code: 401 };
 
   if (typeof id != "number") return { error: "id is required", code: 403 };
@@ -244,7 +253,9 @@ export const deleteLienholderByName = async (
   db_error?: string;
   code: number;
 }> => {
-  const authUser: AuthUser = await getAuthUser();
+  const authUser: AuthUser | null = await getAuthUser();
+  if (!authUser) return { error: "your session expired. please log in", code: 401 };
+
   if (authUser.role != "ADMIN") return { error: "You don't have permission to delete lienholder. Please contact ADMIN.", code: 401 };
 
   if (typeof name != "string") return { error: "name is required", code: 403 };

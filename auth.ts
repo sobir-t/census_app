@@ -31,21 +31,21 @@ export const {
     },
     async session({ token, session }) {
       if (token.sub && session.user) session.user.id = token.sub;
-      if (token.role && session.user) session.user.role = token.role;
+      // if (token.role && session.user) session.user.role = token.role;
       // console.log(JSON.stringify(session, null, 2));
       return session;
     },
     async jwt({ token, trigger, session, account }) {
       // if (!token.sub) return token;
-      const existingUser = await dbGetUserById(parseInt(token.sub));
-      if (!existingUser) return token;
+      // const existingUser = await dbGetUserById(parseInt(token.sub as string));
+      // if (!existingUser) return token;
       if (trigger === "update" && session) {
         const { name, email, image } = session;
         if (name) token.name = name;
         if (email) token.email = email;
         if (image) token.picture = image;
       }
-      token.role = existingUser.role;
+      // token.role = existingUser.role;
       return token;
     },
   },

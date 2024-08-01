@@ -32,12 +32,12 @@ import { saveRecordWithRelationship, updateRecordWithRelationship } from "@/acti
 import { AuthUser, RecordWithRelationship } from "@/types/types";
 
 interface UpdateRecordDialogProps {
-  user: AuthUser;
+  authUser: AuthUser;
   recordWithRelationship: RecordWithRelationship | undefined;
   setEditRecordDialogOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export default function UpdateRecordDialog({ user, recordWithRelationship, setEditRecordDialogOpen }: UpdateRecordDialogProps) {
+export default function UpdateRecordDialog({ authUser, recordWithRelationship, setEditRecordDialogOpen }: UpdateRecordDialogProps) {
   const [error, setError] = useState<string | undefined>(undefined);
   const [success, setSuccess] = useState<string | undefined>(undefined);
   const [hispanicOtherDisabled, setHispanicOtherDisabled] = useState<boolean>(recordWithRelationship?.record?.hispanic != "OTHER");
@@ -48,7 +48,7 @@ export default function UpdateRecordDialog({ user, recordWithRelationship, setEd
   const form = useForm<z.infer<typeof RecordWithRelationshipSchema>>({
     resolver: zodResolver(RecordWithRelationshipSchema),
     defaultValues: {
-      userId: parseInt(user.id as string),
+      userId: parseInt(authUser.id as string),
       relationship: recordWithRelationship?.relative?.relationship || "",
       firstName: recordWithRelationship?.record?.firstName || "",
       lastName: recordWithRelationship?.record?.lastName || "",
@@ -187,7 +187,7 @@ export default function UpdateRecordDialog({ user, recordWithRelationship, setEd
                           <Input
                             className={cn("pl-3 text-left font-normal")}
                             placeholder={"Pick a date"}
-                            value={field.value || null}
+                            value={field.value || ""}
                             onChange={field.onChange}
                           ></Input>
                           {/* <Button variant={"outline"} className={cn("w-64 pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>
@@ -205,7 +205,6 @@ export default function UpdateRecordDialog({ user, recordWithRelationship, setEd
                             field.onChange(format(date as Date, "MM/dd/yyyy"));
                           }}
                           disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
-                          initialFocus
                         />
                       </PopoverContent>
                     </Popover>

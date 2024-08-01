@@ -11,7 +11,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Record } from "@prisma/client";
 import { Dispatch, SetStateAction, useState } from "react";
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
@@ -31,7 +30,7 @@ export function DeleteRecordAlertDialog({ recordWithRelationship, setEditRecordD
       setSuccess(undefined);
       setError("Deleting SELF record is prohibited. You can only edit SELF record.");
     } else
-      deleteRecordById({ recordId: recordWithRelationship.record.id }).then((data) => {
+      deleteRecordById(recordWithRelationship.record.id).then((data) => {
         if (data.error) setError(data.error);
         else {
           setSuccess(data.success);

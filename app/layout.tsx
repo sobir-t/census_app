@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/navbar";
 import { auth } from "@/auth";
 import { cookies } from "next/headers";
+import { getAuthUser } from "@/actions/actionsAuth";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,14 +19,13 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   cookies();
-  const session = await auth();
-  const user = session?.user;
+  const authUser = await getAuthUser();
 
   return (
     <html lang="en">
       <body className={inter.className}>
         <div className="min-h-full">
-          <Navbar user={user} />
+          <Navbar authUser={authUser} />
           {children}
         </div>
       </body>

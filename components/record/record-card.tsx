@@ -6,12 +6,12 @@ import { AuthUser, RecordWithRelationship } from "@/types/types";
 import { DeleteRecordAlertDialog } from "./delete-record-alert";
 
 interface RecordCardProps {
-  user: AuthUser;
+  authUser: AuthUser;
   recordWithRelationship: RecordWithRelationship;
   setEditRecordDialogOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export default function RecordCard({ user, recordWithRelationship, setEditRecordDialogOpen }: RecordCardProps) {
+export default function RecordCard({ authUser, recordWithRelationship, setEditRecordDialogOpen }: RecordCardProps) {
   return (
     <div className="record-card p-4 flex flex-wrap gap-2 items-start justify-start sm:col-span-6 border-b-2 rounded-md shadow hover:bg-slate-100">
       <div className="w-full inline-flex items-center justify-between">
@@ -20,7 +20,7 @@ export default function RecordCard({ user, recordWithRelationship, setEditRecord
           {recordWithRelationship.relative ? recordWithRelationship.relative.relationship : "not selected"}
         </p>
         <div className="actions">
-          <UpdateRecordDialog user={user} recordWithRelationship={recordWithRelationship} setEditRecordDialogOpen={setEditRecordDialogOpen} />
+          <UpdateRecordDialog authUser={authUser} recordWithRelationship={recordWithRelationship} setEditRecordDialogOpen={setEditRecordDialogOpen} />
           {recordWithRelationship && (
             <DeleteRecordAlertDialog recordWithRelationship={recordWithRelationship} setEditRecordDialogOpen={setEditRecordDialogOpen} />
           )}

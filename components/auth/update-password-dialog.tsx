@@ -1,7 +1,6 @@
 import { useState, useTransition } from "react";
 import { Description, Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { Dispatch, SetStateAction } from "react";
-import { User } from "next-auth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UpdatePasswordSchema } from "@/schemas";
@@ -13,14 +12,15 @@ import { Input } from "@/components/ui/input";
 import { FormSuccess } from "@/components/form-success";
 import { FormError } from "@/components/form-error";
 import { Button } from "@/components/ui/button";
+import { AuthUser } from "@/types/types";
 
 interface UpdatePasswordDialogProps {
   isEditPasswordOpen: boolean;
   setEditPasswordOpen: Dispatch<SetStateAction<boolean>>;
-  user: User;
+  authUser: AuthUser;
 }
 
-export function UpdatePasswordDialog({ user, isEditPasswordOpen, setEditPasswordOpen }: UpdatePasswordDialogProps) {
+export function UpdatePasswordDialog({ authUser, isEditPasswordOpen, setEditPasswordOpen }: UpdatePasswordDialogProps) {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
@@ -28,7 +28,7 @@ export function UpdatePasswordDialog({ user, isEditPasswordOpen, setEditPassword
   const form = useForm<z.infer<typeof UpdatePasswordSchema>>({
     resolver: zodResolver(UpdatePasswordSchema),
     defaultValues: {
-      id: parseInt(user.id as string),
+      id: parseInt(authUser.id as string),
       oldPassword: "",
       newPassword: "",
     },

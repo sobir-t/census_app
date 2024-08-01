@@ -67,7 +67,8 @@ export const getRecordById = async (
 ): Promise<{ success?: string; record?: Record; error?: string; data?: any; db_error?: string; code: number }> => {
   if (typeof recordId != "number") return { error: "record id is required and must be number", code: 403 };
 
-  const authUser: AuthUser = await getAuthUser();
+  const authUser: AuthUser | null = await getAuthUser();
+  if (!authUser) return { error: "your session expired. please log in", code: 401 };
 
   if (authUser.role != "ADMIN") {
     const user = dbGetUserById(parseInt(authUser.id as string));
@@ -110,7 +111,9 @@ export const saveRecord = async (
 
   const { firstName, lastName, dob, gender, telephone, householdId, hispanic, hispanicOther, race, raceOther, otherStay } = validatedFields.data;
 
-  const authUser: AuthUser = await getAuthUser();
+  const authUser: AuthUser | null = await getAuthUser();
+  if (!authUser) return { error: "your session expired. please log in", code: 401 };
+
   const result1 = await dbGetUsersByHouseholdId(householdId);
   console.log(result1);
   const user: User | undefined = result1.users?.find((u) => u.id == parseInt(authUser.id as string));
@@ -158,7 +161,9 @@ export const updateRecord = async (
 
   const { id, firstName, lastName, dob, gender, telephone, householdId, hispanic, hispanicOther, race, raceOther, otherStay } = validatedFields.data;
 
-  const authUser: AuthUser = await getAuthUser();
+  const authUser: AuthUser | null = await getAuthUser();
+  if (!authUser) return { error: "your session expired. please log in", code: 401 };
+
   const result1 = await dbGetUsersByHouseholdId(householdId);
   const user: User | undefined = result1.users?.find((u) => u.id == parseInt(authUser.id as string));
   if (!user || authUser.role != "ADMIN") return { error: "You have no permission to update record under someone's household.", code: 401 };
@@ -194,8 +199,10 @@ export const deleteRecordById = async (
 ): Promise<{ success?: string; error?: string; db_error?: string; code: number }> => {
   if (typeof recordId != "number") return { error: "record id is required and must be number", code: 403 };
 
-  const currentUser: AuthUser = await getAuthUser();
-  const isAdmin: boolean = currentUser.role == "ADMIN";
+  const authUser: AuthUser | null = await getAuthUser();
+  if (!authUser) return { error: "your session expired. please log in", code: 401 };
+
+  const isAdmin: boolean = authUser.role == "ADMIN";
   const result1 = await dbGetRecordById(recordId);
   if (!result1.record || result1.db_error) {
     // if current user is not connected to record and is not ADMIN then we avoiding giving any information
@@ -204,7 +211,7 @@ export const deleteRecordById = async (
   }
 
   const result2 = await dbGetUsersByRecordId(recordId);
-  const user = result2.users?.find((u) => u.id == parseInt(currentUser.id as string));
+  const user = result2.users?.find((u) => u.id == parseInt(authUser.id as string));
   if (!user && !isAdmin) return { error: "You have no permission to delete record under someone's household.", code: 401 };
 
   // if record in under user's household or user is admin then record is allowed to be deleted
@@ -224,8 +231,10 @@ export const deleteRecordsUnderHouseholdId = async (
 ): Promise<{ success?: string; error?: string; db_error?: string; code: number }> => {
   if (typeof householdId != "number") return { error: "household id is required and must be number", code: 403 };
 
-  const currentUser: AuthUser = await getAuthUser();
-  const isAdmin: boolean = currentUser.role == "ADMIN";
+  const authUser: AuthUser | null = await getAuthUser();
+  if (!authUser) return { error: "your session expired. please log in", code: 401 };
+
+  const isAdmin: boolean = authUser.role == "ADMIN";
 
   const result1 = await dbGetHouseholdById(householdId);
   if (!result1.household) {
@@ -234,7 +243,7 @@ export const deleteRecordsUnderHouseholdId = async (
     else return { error: "You have no permission to delete records under someone's household.", code: 401 };
   }
 
-  const result2 = await dbGetUserById(parseInt(currentUser.id as string));
+  const result2 = await dbGetUserById(parseInt(authUser.id as string));
   if (result1.household.id != result2?.householdId && !isAdmin)
     return { error: "You have no permission to delete records under someone's household.", code: 401 };
 
@@ -253,7 +262,9 @@ export const getRelativesUnderUserId = async (
 ): Promise<{ success?: string; relatives?: Relative[]; error?: string; db_error?: string; code: number }> => {
   if (typeof userId != "number") return { error: "user id is required and must be number", code: 403 };
 
-  const authUser: AuthUser = await getAuthUser();
+  const authUser: AuthUser | null = await getAuthUser();
+  if (!authUser) return { error: "your session expired. please log in", code: 401 };
+
   if (userId != parseInt(authUser.id as string) && authUser.role != "ADMIN")
     return { error: "You don't have permission to get someone's relatives", code: 401 };
 
@@ -274,7 +285,9 @@ export const getRelativesUnderUserId = async (
 export const saveRelativeInfo = async (
   newRelative: Omit<Relative, "id">
 ): Promise<{ success?: string; relative?: Relative; error?: string; data?: any; db_error?: string; code: number }> => {
-  const authUser: AuthUser = await getAuthUser();
+  const authUser: AuthUser | null = await getAuthUser();
+  if (!authUser) return { error: "your session expired. please log in", code: 401 };
+
   if (newRelative.userId != parseInt(authUser.id as string) && authUser.role != "ADMIN")
     return { error: "You don't have permission to save to someone's relatives", code: 401 };
 
@@ -294,7 +307,9 @@ export const saveRelativeInfo = async (
 export const updateRelativeInfo = async (
   newRelative: Relative
 ): Promise<{ success?: string; relative?: Relative; error?: string; data?: any; db_error?: string; code: number }> => {
-  const authUser: AuthUser = await getAuthUser();
+  const authUser: AuthUser | null = await getAuthUser();
+  if (!authUser) return { error: "your session expired. please log in", code: 401 };
+
   if (newRelative.userId != parseInt(authUser.id as string) && authUser.role != "ADMIN")
     return { error: "You don't have permission to update to someone's relatives", code: 401 };
 
