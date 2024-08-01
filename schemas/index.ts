@@ -64,7 +64,7 @@ export const UpdatePasswordSchema = z.object({
     .max(20, {
       message: "Maximum 20 characters.",
     })
-    .nullable(),
+    .optional(),
   newPassword: z
     .string({ required_error: "new password is required." })
     .min(6, {

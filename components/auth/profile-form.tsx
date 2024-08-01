@@ -22,14 +22,14 @@ import { AuthUser } from "@/types/types";
 
 // export const dynamic = "force-dynamic";
 
-export const ProfileForm = ({ user }: { user: AuthUser }) => {
+export const ProfileForm = ({ authUser }: { authUser: AuthUser }) => {
   const { update } = useSession();
   const router = useRouter();
   // const [profile, setProfile] = useState(user);
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
-  const [avatar, setAvatar] = useState<string>(user.image as string);
+  const [avatar, setAvatar] = useState<string>(authUser.image as string);
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [isEditOpen, setEditOpen] = useState(false);
 
@@ -38,9 +38,9 @@ export const ProfileForm = ({ user }: { user: AuthUser }) => {
   const form = useForm<z.infer<typeof UpdateUserSchema>>({
     resolver: zodResolver(UpdateUserSchema),
     defaultValues: {
-      id: parseInt(user.id as string),
-      email: user.email as string,
-      name: user.name as string,
+      id: parseInt(authUser.id as string),
+      email: authUser.email as string,
+      name: authUser.name as string,
       image: avatar,
     },
   });
@@ -130,7 +130,7 @@ export const ProfileForm = ({ user }: { user: AuthUser }) => {
                 onClick={(e) => {
                   e.preventDefault();
                   form.reset();
-                  setAvatar(user.image as string);
+                  setAvatar(authUser.image as string);
                   setEditOpen(false);
                 }}
               >
@@ -161,7 +161,7 @@ export const ProfileForm = ({ user }: { user: AuthUser }) => {
         <Button variant="link" className="password-edit-button btn flex" type="button" onClick={() => setEditPasswordOpen(true)}>
           Edit password
         </Button>
-        <UpdatePasswordDialog user={user} isEditPasswordOpen={isEditPasswordOpen} setEditPasswordOpen={setEditPasswordOpen} />
+        <UpdatePasswordDialog authUser={authUser} isEditPasswordOpen={isEditPasswordOpen} setEditPasswordOpen={setEditPasswordOpen} />
       </div>
     </CardWrapper>
   );

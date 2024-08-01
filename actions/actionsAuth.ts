@@ -1,13 +1,11 @@
 "use server";
 
 import * as z from "zod";
-import bcrypt from "bcryptjs";
-import { AuthError, Session } from "next-auth";
+import { AuthError, Session, User } from "next-auth";
 
-import { LoginSchema, RegisterUserSchema } from "@/schemas";
+import { LoginSchema } from "@/schemas";
 import { auth, signIn, signOut, unstable_update } from "@/auth";
-import { dbGetUserByEmail, dbSaveNewUser } from "@/data/dbUsers";
-import { User } from "@prisma/client";
+import { dbGetUserByEmail, dbGetUserById } from "@/data/dbUsers";
 import { AuthUser } from "@/types/types";
 
 /**
@@ -20,8 +18,14 @@ import { AuthUser } from "@/types/types";
  *   role: "USER" | "ADMIN"
  * }
  */
-export const getAuthUser = async (): Promise<AuthUser> => {
-  return (await auth())?.user as AuthUser;
+export const getAuthUser = async (): Promise<AuthUser | null> => {
+  const session = await auth();
+  if (!session || !session.user) return null;
+  if (session.user.id) {
+    const dbUser = await dbGetUserById(parseInt(session.user.id));
+    if (dbUser) return { ...session.user, role: dbUser.role };
+  }
+  return null;
 };
 
 export const wait = async (seconds: number = 1): Promise<void> => {

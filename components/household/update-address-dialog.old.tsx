@@ -13,10 +13,10 @@ import { Input } from "../ui/input";
 import { FormSuccess } from "../form-success";
 import { FormError } from "../form-error";
 import { Button } from "../ui/button";
-import { Household, Lienholder } from "@prisma/client";
+import { Household } from "@prisma/client";
 import { Select } from "@radix-ui/react-select";
 import { SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { saveHousehold, updateHousehold } from "@/actions/actionsRecords";
+import { saveHousehold, updateHousehold } from "@/actions/actionsHousehold";
 
 interface UpdateAddressDialogProps {
   isEditAddressOpen: boolean;

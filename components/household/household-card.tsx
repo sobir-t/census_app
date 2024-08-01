@@ -9,10 +9,10 @@ import RecordsContainer from "@/components/record/records-container";
 import { AuthUser } from "@/types/types";
 
 interface AddressCardProps {
-  user: AuthUser;
+  authUser: AuthUser;
 }
 
-export default function HouseholdCard({ user }: AddressCardProps) {
+export default function HouseholdCard({ authUser }: AddressCardProps) {
   const [isLoading, setLoading] = useState(true);
   const [household, setHousehold] = useState<Household | undefined>(undefined);
   const [lienholder, setLienholder] = useState<Lienholder | undefined>(undefined);
@@ -20,7 +20,7 @@ export default function HouseholdCard({ user }: AddressCardProps) {
 
   const getHousehold = () => {
     setLoading(true);
-    getHouseholdByUserId(parseInt(user.id as string)).then((data) => {
+    getHouseholdByUserId(parseInt(authUser.id as string)).then((data) => {
       setHousehold(data.household as Household);
       if (data.household?.lienholderId) {
         getLienholderById(data.household.lienholderId)
@@ -47,7 +47,7 @@ export default function HouseholdCard({ user }: AddressCardProps) {
       <div className="address-card p-4 flex flex-col border-b-2 rounded-md shadow hover:bg-slate-100">
         <div className="flex justify-between items-center w-full">
           <p>Household information:</p>
-          {!isLoading ? <UpdateHouseholdDialog user={user} household={household} setEditHouseholdOpen={setEditHouseholdOpen} /> : null}
+          {!isLoading ? <UpdateHouseholdDialog authUser={authUser} household={household} setEditHouseholdOpen={setEditHouseholdOpen} /> : null}
         </div>
         {isLoading ? (
           <div className="space-y-2">
@@ -85,7 +85,7 @@ export default function HouseholdCard({ user }: AddressCardProps) {
           </div>
         )}
       </div>
-      {household && <RecordsContainer user={user} />}
+      {household && <RecordsContainer authUser={authUser} />}
     </>
   );
 }

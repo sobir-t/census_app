@@ -1,7 +1,7 @@
 "use client";
+import { AuthUser } from "@/types/types";
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { User } from "next-auth";
 import { signOut } from "next-auth/react";
 
 import { usePathname } from "next/navigation";
@@ -25,7 +25,7 @@ interface ProfileProps {
   }[];
 }
 
-export default function Navbar({ user }: { user: User | undefined }) {
+export default function Navbar({ authUser }: { authUser: AuthUser | null }) {
   const pathname = usePathname();
   let navigation: NavigationProps[] = [
     { name: "About", href: "/", current: pathname == "/" },
@@ -35,8 +35,8 @@ export default function Navbar({ user }: { user: User | undefined }) {
 
   let profile: ProfileProps;
 
-  if (user) {
-    if (user.role == "ADMIN")
+  if (authUser) {
+    if (authUser.role == "ADMIN")
       navigation = [
         { name: "Dashboard", href: "/dashboard", current: pathname == "/dashboard" },
         { name: "Records", href: "/records", current: pathname == "/records" },
@@ -44,7 +44,7 @@ export default function Navbar({ user }: { user: User | undefined }) {
       ];
     else navigation = [{ name: "Dashboard", href: "/dashboard", current: pathname == "/dashboard" }, ...navigation];
     profile = {
-      src: user.image || "/account.svg",
+      src: authUser.image || "/account.svg",
       menuItems: [
         {
           text: "You profile",

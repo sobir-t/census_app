@@ -137,29 +137,6 @@ export default function LienholderForm({ lienholderId, newLienholderId, setNewLi
           <p>No lienholder</p>
         </div>
       )}
-
-      {/* {addEnabled ? (
-        <Input
-          id="lienholder-name-input"
-          className="lienholder-name-input col-span-12"
-          placeholder="Please type your lienholder name here."
-          value={name}
-          onChange={(e) => {
-            nameChange(e);
-          }}
-        ></Input>
-      ) : checked ? (
-        <LienholderCombobox
-          lienholders={lienholders}
-          lienholderId={lienholderId}
-          newLienholderId={newLienholderId}
-          setNewLienholderId={setNewLienholderId}
-        />
-      ) : (
-        <div className="inline-flex items-center justify-start whitespace-nowrap border border-input bg-background rounded-md col-span-12 text-sm font-medium h-9 px-4">
-          <p>No lienholder</p>
-        </div>
-      )} */}
     </div>
   );
 }

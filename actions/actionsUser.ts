@@ -56,7 +56,9 @@ export const updateUser = async (
 
   const { id, email } = validatedFields.data;
 
-  const authUser: AuthUser = await getAuthUser();
+  const authUser: AuthUser | null = await getAuthUser();
+  if (!authUser) return { error: "your session expired. please log in", code: 401 };
+
   if (id != parseInt(authUser.id as string) && authUser.role != "ADMIN")
     return { error: "You have no permission to update someone's user info", code: 401 };
 
@@ -75,7 +77,9 @@ export const updateUser = async (
 export const deleteUserById = async (id: number | undefined): Promise<{ success?: string; error?: string; db_error?: string; code: number }> => {
   if (typeof id != "number") return { error: "parameter id for user's id is required and must be a number.", code: 403 };
 
-  const authUser: AuthUser = await getAuthUser();
+  const authUser: AuthUser | null = await getAuthUser();
+  if (!authUser) return { error: "your session expired. please log in", code: 401 };
+
   if (id != parseInt(authUser.id as string) && authUser.role != "ADMIN")
     return { error: "You don't have permission to delete somebody's user.", code: 403 };
 
@@ -100,7 +104,9 @@ export const updatePassword = async (
 
   const { id, oldPassword, newPassword } = validatedFields.data;
 
-  const authUser: AuthUser = await getAuthUser();
+  const authUser: AuthUser | null = await getAuthUser();
+  if (!authUser) return { error: "your session expired. please log in", code: 401 };
+
   const isAdmin: boolean = authUser.role != "ADMIN";
 
   if (id != parseInt(authUser?.id as string) && !isAdmin) return { error: "You have no permission to update someone's password", code: 401 };

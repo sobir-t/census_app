@@ -2,15 +2,20 @@
 
 "use client";
 
+import { getAuthUser } from "@/actions/actionsAuth";
 // import { auth } from "@/auth";
 import { ProfileForm } from "@/components/auth/profile-form";
 import { AuthUser } from "@/types/types";
-import { User } from "next-auth";
-import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 
 export default function ProfilePage() {
-  const { data } = useSession();
-  const user: AuthUser = data?.user as AuthUser;
+  const [authUser, setAuthUser] = useState<AuthUser | null>(null);
+
+  useEffect(() => {
+    getAuthUser().then((data) => {
+      setAuthUser(data);
+    });
+  }, []);
   return (
     <>
       <header className="bg-white shadow">
@@ -19,7 +24,7 @@ export default function ProfilePage() {
         </div>
       </header>
       <main>
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">{user ? <ProfileForm user={user} /> : <p>Loading . . .</p>}</div>
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">{authUser ? <ProfileForm authUser={authUser} /> : <p>Loading . . .</p>}</div>
       </main>
     </>
   );

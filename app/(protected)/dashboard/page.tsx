@@ -2,14 +2,25 @@
 
 "use client";
 
+import { getAuthUser } from "@/actions/actionsAuth";
 import HouseholdCard from "@/components/household/household-card";
 import LoadingCard from "@/components/household/loading-card";
 import { AuthUser } from "@/types/types";
 import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 
 export default function LandingPage() {
-  let { data } = useSession();
-  const user: AuthUser | undefined = data?.user ? (data.user as AuthUser) : undefined;
+  const [authUser, setAuthUser] = useState<AuthUser | null>(null);
 
-  return <div className="dashboard-container w-full ">{user ? <HouseholdCard user={user} /> : <LoadingCard className="loading-address-card" />}</div>;
+  useEffect(() => {
+    getAuthUser().then((data) => {
+      setAuthUser(data);
+    });
+  }, []);
+
+  return (
+    <div className="dashboard-container w-full ">
+      {authUser ? <HouseholdCard authUser={authUser} /> : <LoadingCard className="loading-address-card" />}
+    </div>
+  );
 }
