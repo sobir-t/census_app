@@ -1,9 +1,15 @@
-require("dotenv").config();
+require("@dotenvx/dotenvx").config();
 
 module.exports = {
   apps: [
     {
+      name: "census-app",
       script: "npm start",
+      env_production: {
+        NODE_ENV: "production",
+        DATABASE_URL: process.env.DATABASE_URL,
+        AUTH_SECRET: process.env.AUTH_SECRET,
+      },
     },
   ],
 
