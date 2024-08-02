@@ -1,12 +1,9 @@
-import NextAuth from "next-auth";
-
-import authConfig from "@/auth.config";
-
-const { auth } = NextAuth(authConfig);
+// const { auth } = NextAuth(authConfig);
+import { auth } from "@/auth";
 import { DEFAULT_LOGIN_REDIRECT, apiAuthPrefix, uiAuthPrefix, publicRoutes, apiSecuredRoutes } from "@/routes";
 import { NextResponse } from "next/server";
 
-export default auth((req) => {
+export default auth((req): void | Response | Promise<void | Response> => {
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
 
@@ -15,17 +12,17 @@ export default auth((req) => {
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
   const isApiSecuredRoute = apiSecuredRoutes.some((p) => nextUrl.pathname.includes(p));
 
-  if (isApiAuthRoute) return null;
+  if (isApiAuthRoute) return;
 
   if (isApiSecuredRoute && !isPublicRoute) {
-    if (!isLoggedIn) return NextResponse.json({ error: "Your tocken has expired or you aren't logged in!" }, { status: 401 });
-    return null;
+    if (!isLoggedIn) return NextResponse.json({ error: "Your token has expired or you aren't logged in!" }, { status: 401 });
+    return;
   }
 
   if (isUiAuthRoute) {
-    console.log("hitted isUiAuthRoute");
+    console.log("hit isUiAuthRoute");
     if (isLoggedIn) return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
-    return null;
+    return;
   }
 
   if (!isLoggedIn && !isPublicRoute) {
@@ -40,7 +37,7 @@ export default auth((req) => {
     return Response.redirect(new URL("/auth/login", nextUrl));
   }
 
-  return null;
+  return;
 });
 
 // Optionally, don't invoke Middleware on some paths
