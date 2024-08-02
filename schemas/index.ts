@@ -127,6 +127,7 @@ export const STATES = [
   "WV",
   "WI",
   "WY",
+  "",
 ] as const;
 
 export const HOME_TYPE = ["HOUSE", "APARTMENT", "MOBILE_HOME", "SHELTER"] as const;
