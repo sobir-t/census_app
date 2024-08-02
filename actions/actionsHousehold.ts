@@ -87,18 +87,7 @@ export const saveHousehold = async (
   let dbUser = await dbGetUserById(userId);
   if (!dbUser) return { error: `Couldn't find user by id: '${userId}'`, code: 404 };
 
-  if (state === "") return { error: "Please select correct state", code: 403 };
-
-  const { household, db_error } = await dbSaveHousehold({
-    homeType,
-    ownership,
-    lienholderId,
-    address1,
-    address2,
-    city,
-    state,
-    zip,
-  });
+  const { household, db_error } = await dbSaveHousehold(validatedFields.data);
   if (db_error || !household) return { error: "Failed to save household.", db_error, code: 500 };
 
   const result = await dbUpdateUser({ id: userId, householdId: household.id });
@@ -130,19 +119,7 @@ export const updateHousehold = async (
     } else return result1;
   }
 
-  if (state === "") return { error: "Please select correct state", code: 403 };
-
-  const { household, db_error } = await dbUpdateHousehold({
-    id,
-    homeType,
-    ownership,
-    lienholderId,
-    address1,
-    address2,
-    city,
-    state,
-    zip,
-  });
+  const { household, db_error } = await dbUpdateHousehold(validatedFields.data);
   if (db_error || !household) return { error: "Failed to update household.", db_error, code: 500 };
   return { success: "Household saved successfully.", household, code: 201 };
 };
