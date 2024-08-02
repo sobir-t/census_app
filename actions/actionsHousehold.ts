@@ -76,7 +76,7 @@ export const saveHousehold = async (
   console.log(JSON.stringify(validatedFields.error?.errors, null, 2));
   if (!validatedFields.success) return { error: "Invalid fields!", data: validatedFields.error?.errors, code: 403 };
 
-  const { userId, ownership, homeType, lienholderId, address1, address2, city, state, zip } = validatedFields.data;
+  const { userId } = validatedFields.data;
 
   const authUser: AuthUser | null = await getAuthUser();
   if (!authUser) return { error: "your session expired. please log in", code: 401 };
@@ -109,7 +109,7 @@ export const updateHousehold = async (
   console.log(JSON.stringify(validatedFields.error?.errors, null, 2));
   if (!validatedFields.success) return { error: "Invalid fields!", data: validatedFields.error?.errors, code: 403 };
 
-  const { id, homeType, ownership, lienholderId, address1, address2, city, state, zip } = validatedFields.data;
+  const { id } = validatedFields.data;
 
   const result1 = await getHouseholdById(id);
   if (!result1.household) {

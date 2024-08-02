@@ -49,7 +49,7 @@ export default function UpdateRecordDialog({ authUser, recordWithRelationship, s
     resolver: zodResolver(RecordWithRelationshipSchema),
     defaultValues: {
       userId: parseInt(authUser.id as string),
-      relationship: recordWithRelationship?.relative?.relationship || "",
+      relationship: recordWithRelationship?.relative?.relationship,
       firstName: recordWithRelationship?.record?.firstName || "",
       lastName: recordWithRelationship?.record?.lastName || "",
       dob: recordWithRelationship?.record?.dob ? format(recordWithRelationship.record.dob, "MM/dd/yyyy") : undefined,
