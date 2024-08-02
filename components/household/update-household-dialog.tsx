@@ -48,13 +48,13 @@ export default function UpdateHouseholdDialog({ authUser, household, setEditHous
     resolver: zodResolver(HouseholdSchema),
     defaultValues: {
       userId: parseInt(authUser.id as string),
-      homeType: household?.homeType || "",
-      ownership: household?.ownership || "",
+      homeType: household?.homeType,
+      ownership: household?.ownership,
       lienholderId: lienholderId || null,
       address1: household?.address1 || "",
       address2: household?.address2 || "",
       city: household?.city || "",
-      state: household?.state || "",
+      state: household?.state,
       zip: household?.zip || "",
     },
   });
