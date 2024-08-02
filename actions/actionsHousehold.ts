@@ -76,7 +76,7 @@ export const saveHousehold = async (
   console.log(JSON.stringify(validatedFields.error?.errors, null, 2));
   if (!validatedFields.success) return { error: "Invalid fields!", data: validatedFields.error?.errors, code: 403 };
 
-  const { userId } = validatedFields.data;
+  const { userId, ownership, homeType, lienholderId, address1, address2, city, state, zip } = validatedFields.data;
 
   const authUser: AuthUser | null = await getAuthUser();
   if (!authUser) return { error: "your session expired. please log in", code: 401 };
@@ -87,7 +87,18 @@ export const saveHousehold = async (
   let dbUser = await dbGetUserById(userId);
   if (!dbUser) return { error: `Couldn't find user by id: '${userId}'`, code: 404 };
 
-  const { household, db_error } = await dbSaveHousehold(validatedFields.data);
+  if (state === "") return { error: "Please select correct state", code: 403 };
+
+  const { household, db_error } = await dbSaveHousehold({
+    homeType,
+    ownership,
+    lienholderId,
+    address1,
+    address2,
+    city,
+    state,
+    zip,
+  });
   if (db_error || !household) return { error: "Failed to save household.", db_error, code: 500 };
 
   const result = await dbUpdateUser({ id: userId, householdId: household.id });
@@ -109,7 +120,7 @@ export const updateHousehold = async (
   console.log(JSON.stringify(validatedFields.error?.errors, null, 2));
   if (!validatedFields.success) return { error: "Invalid fields!", data: validatedFields.error?.errors, code: 403 };
 
-  const { id } = validatedFields.data;
+  const { id, homeType, ownership, lienholderId, address1, address2, city, state, zip } = validatedFields.data;
 
   const result1 = await getHouseholdById(id);
   if (!result1.household) {
@@ -119,7 +130,19 @@ export const updateHousehold = async (
     } else return result1;
   }
 
-  const { household, db_error } = await dbUpdateHousehold(validatedFields.data);
+  if (state === "") return { error: "Please select correct state", code: 403 };
+
+  const { household, db_error } = await dbUpdateHousehold({
+    id,
+    homeType,
+    ownership,
+    lienholderId,
+    address1,
+    address2,
+    city,
+    state,
+    zip,
+  });
   if (db_error || !household) return { error: "Failed to update household.", db_error, code: 500 };
   return { success: "Household saved successfully.", household, code: 201 };
 };
