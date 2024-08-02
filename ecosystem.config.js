@@ -9,6 +9,8 @@ module.exports = {
         NODE_ENV: "production",
         DATABASE_URL: process.env.DATABASE_URL,
         AUTH_SECRET: process.env.AUTH_SECRET,
+        AUTH_TRUST_HOST: true,
+        HOSTNAME: process.env.SSH_HOSTMACHINE,
       },
     },
   ],
