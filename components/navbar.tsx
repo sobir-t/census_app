@@ -56,7 +56,7 @@ export default function Navbar({ authUser }: { authUser: AuthUser | null }) {
         },
         {
           text: "Sign out",
-          href: "/",
+          href: "#",
           onclick: () => {
             signOut();
           },

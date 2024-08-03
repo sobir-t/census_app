@@ -19,11 +19,7 @@ export default auth((req): void | Response | Promise<void | Response> => {
     return;
   }
 
-  if (isUiAuthRoute) {
-    console.log("hit isUiAuthRoute");
-    if (isLoggedIn) return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
-    return;
-  }
+  if (isUiAuthRoute && isLoggedIn) return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
 
   if (!isLoggedIn && !isPublicRoute) {
     // let callbackUrl = nextUrl.pathname;
