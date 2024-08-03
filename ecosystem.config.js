@@ -10,6 +10,7 @@ module.exports = {
         DATABASE_URL: process.env.DATABASE_URL,
         AUTH_SECRET: process.env.AUTH_SECRET,
         AUTH_TRUST_HOST: true,
+        AUTH_URL: `${process.env.SSH_HOSTMACHINE}/`,
         HOSTNAME: process.env.SSH_HOSTMACHINE,
       },
     },
