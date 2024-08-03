@@ -21,9 +21,9 @@ module.exports = {
       repo: process.env.GIT_REPOSITORY,
       path: process.env.DESTINATION_PATH,
       "pre-setup": "",
-      "post-setup": "cp ~/.env* .",
+      "post-setup": "cp ~/.env* . && source ~/.nvm/nvm.sh && npm install && npx prisma db push && npm run build",
       "pre-deploy-local": "",
-      "post-deploy": "source ~/.nvm/nvm.sh && npm install && npm run build && pm2 reload ecosystem.config.js --env production",
+      "post-deploy": "pm2 reload ecosystem.config.js --env production",
     },
   },
 };
