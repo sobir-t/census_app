@@ -23,7 +23,7 @@ module.exports = {
       "pre-setup": "",
       "post-setup": "cp ~/.env* . && source ~/.nvm/nvm.sh && npm install && npx prisma db push && npm run build",
       "pre-deploy-local": "",
-      "post-deploy": "pm2 reload ecosystem.config.js --env production",
+      "post-deploy": "source ~/.nvm/nvm.sh && pm2 reload ecosystem.config.js --env production",
     },
   },
 };
