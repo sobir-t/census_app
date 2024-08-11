@@ -1,4 +1,4 @@
-# Working with container hosted remote server
+# Deployment on container hosted by local network server (raspberry pi, another PC, NAS devise)
 
 ## Content
 
