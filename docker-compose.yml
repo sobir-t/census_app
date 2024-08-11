@@ -1,5 +1,5 @@
-# This docker-compose file is meant to be run from project root folder
-# which is outside of database folder.
+# On you termonal please run command:
+# docker compose up -d
 
 services:
   postgres:
@@ -14,5 +14,18 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data/
 
+  # Swagger server is work in progress
+  # swagger_ui:
+  #   image: "swaggerapi/swagger-ui"
+  #   container_name: "swagger-ui"
+  #   ports:
+  #     - 80:3001
+  #   environment:
+  #     - BASE_URL=/swagger
+  #     - SWAGGER_JSON=/swagger/swagger.json
+  #   volumes:
+  #     - swagger-ui:/foo swaggerapi/swagger-ui
+
 volumes:
   postgres-data:
+  # swagger-ui:

@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { dbGetUserById, dbUpdateUser } from "@/data/dbUsers";
+import { dbGetUserByEmail, dbGetUserById, dbUpdateUser } from "@/data/dbUsers";
 import {
   dbDeleteLienholderById,
   dbDeleteLienholderByName,
@@ -32,7 +32,7 @@ export const getHouseholdByUserId = async (
   if (parseInt(authUser.id as string) != userId && authUser.role !== "ADMIN")
     return { error: "You don't have permission to ged someone's household", code: 401 };
 
-  const user: User | null = await dbGetUserById(parseInt(authUser.id as string));
+  const user: User | null = await dbGetUserById(userId);
   if (!user) return { error: `User by id '${userId}' doesn't exist.`, code: 404 };
   if (!user.householdId) return { error: `User by id '${userId}' doesn't have any household saved.`, code: 404 };
 
@@ -40,6 +40,28 @@ export const getHouseholdByUserId = async (
   if (db_error) return { error: `Failed to get household for user by id '${userId}'.`, db_error, code: 500 };
   if (!household) return { error: `No household found for user by id '${userId}'.`, code: 404 };
   return { success: `Household found for user by id '${userId}'`, household, code: 200 };
+};
+
+/**
+ * Returns Household for given user email. Validates if user authorized.
+ * @param email string
+ */
+export const getHouseholdByUserEmail = async (
+  email: string
+): Promise<{ success?: string; household?: Household; error?: string; db_error?: string; code: number }> => {
+  const authUser: AuthUser | null = await getAuthUser();
+  if (!authUser) return { error: "your session expired. please log in", code: 401 };
+
+  if (authUser.email != email && authUser.role !== "ADMIN") return { error: "You don't have permission to ged someone's household", code: 401 };
+
+  const user: User | null = await dbGetUserByEmail(email);
+  if (!user) return { error: `User with email '${email}' doesn't exist.`, code: 404 };
+  if (!user.householdId) return { error: `User with email '${email}' doesn't have any household saved.`, code: 404 };
+
+  const { household, db_error } = await dbGetHouseholdById(user.householdId);
+  if (db_error) return { error: `Failed to get household for user with email '${email}'.`, db_error, code: 500 };
+  if (!household) return { error: `No household found for user with email '${email}'.`, code: 404 };
+  return { success: `Household found for user with email '${email}'`, household, code: 200 };
 };
 
 /**
