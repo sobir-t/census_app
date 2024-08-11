@@ -12,7 +12,7 @@ import {
   dbUpdateRelative,
 } from "@/data/dbRecord";
 import { Record, Relative, User } from "@prisma/client";
-import { getHouseholdById, getHouseholdByUserId } from "./actionsHousehold";
+import { getHouseholdById, getHouseholdByUserEmail, getHouseholdByUserId } from "./actionsHousehold";
 import { RecordSchema, RecordWithRelationshipSchema, UpdateRecordSchema, UpdateRecordWithRelationshipSchema } from "@/schemas";
 import { z } from "zod";
 import { dbGetUserById, dbGetUsersByHouseholdId, dbGetUsersByRecordId } from "@/data/dbUsers";
@@ -56,6 +56,26 @@ export const getRecordsUnderUserId = async (
   if (!records || !records.length) return { error: `No records found for user by id '${userId}'.`, code: 404 };
 
   return { success: `Records found for user by id '${userId}'`, records, code: 200 };
+};
+
+/**
+ * Returns records under user user by email. Validates if user authorized
+ * @param email string
+ */
+export const getRecordsUnderUserEmail = async (
+  email: string | undefined
+): Promise<{ success?: string; records?: Record[]; error?: string; data?: any; db_error?: string; code: number }> => {
+  if (typeof email != "string" || !email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/))
+    return { error: "user email is required and must be correct email format", code: 403 };
+
+  const result = await getHouseholdByUserEmail(email); // Validates if user authorized
+  if (!result.household) return result;
+
+  const { records, db_error } = await dbGetRecordsUnderHouseholdId(result.household.id);
+  if (db_error) return { error: `Failed to get records for user with email '${email}'.`, db_error, code: 500 };
+  if (!records || !records.length) return { error: `No records found for user with email '${email}'.`, code: 404 };
+
+  return { success: `Records found for user with email '${email}'`, records, code: 200 };
 };
 
 /**
