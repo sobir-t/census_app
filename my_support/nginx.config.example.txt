@@ -1,0 +1,97 @@
+events {
+    worker_connections 1024;
+}
+
+http {
+  resolver 127.0.0.11 valid=30s ipv6=off;
+
+  # Nginx will allocate up to 16 buffers, each of size 32 KB, for each client connection.
+  # These buffers are used to temporarily store parts of the response from the upstream server before forwarding them to the client.
+  # Adjusting the number and size of buffers can impact the memory usage and performance of Nginx when serving large responses.
+  proxy_buffers 16 32k;
+
+  # Nginx configures a buffer of 64 KB to read the response from the upstream server.
+  # This buffer is used to temporarily store chunks of the response as it is being received.
+  # The size of this buffer can affect the efficiency of data transfer between Nginx and the upstream server.
+  # A larger buffer may reduce the number of read operations at the expense of increased memory usage.
+  proxy_buffer_size 64k;
+
+  # This passes the host header from the client to the SSL handshake with the proxied server
+  # Useful when the proxied server relies on Server Name Indication (SNI)
+  # This way, the proxied server can present the correct SSL certificate matching the client's host header
+  proxy_ssl_server_name on;
+
+  server {
+      listen 80;
+      listen [::]:80;
+      server_name ${DOMAIN_NAME};
+
+      # Home page
+      location = / {
+          proxy_pass ${WEB_FLOW_URL};
+          proxy_set_header Host ${WEB_FLOW_HOST};
+      }
+
+      # Other Webflow pages
+      location = /contact {
+          proxy_pass ${WEB_FLOW_URL}/contact;
+          proxy_set_header Host ${WEB_FLOW_HOST};
+      }
+
+      location = /pricing {
+          proxy_pass ${WEB_FLOW_URL}/pricing;
+          proxy_set_header Host ${WEB_FLOW_HOST};
+      }
+
+      location = /privacy {
+          proxy_pass ${WEB_FLOW_URL}/privacy;
+          proxy_set_header Host ${WEB_FLOW_HOST};
+      }
+
+      location = /cookies {
+          proxy_pass ${WEB_FLOW_URL}/cookies;
+          proxy_set_header Host ${WEB_FLOW_HOST};
+      }
+
+      location = /terms {
+          proxy_pass ${WEB_FLOW_URL}/terms;
+          proxy_set_header Host ${WEB_FLOW_HOST};
+      }
+
+      location = /jobs {
+          proxy_pass ${WEB_FLOW_URL}/jobs;
+          proxy_set_header Host ${WEB_FLOW_HOST};
+      }
+
+      # next.js folder with static assets
+      location /static/ {
+          expires 1d;
+          add_header Cache-Control "public, max-age=31536000, immutable";
+      }
+
+      # Everything else goes to next.js web app
+       location / {
+          proxy_pass ${NEXT_JS_URL};
+          proxy_http_version 1.1;
+          proxy_read_timeout 900;
+
+          proxy_set_header Upgrade $http_upgrade;
+          proxy_set_header Connection 'upgrade';
+
+          proxy_set_header Host $host;
+          proxy_set_header X-Forwarded-Host $host;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+          proxy_cache_bypass $http_upgrade;
+          proxy_set_header X-Real-IP $remote_addr;
+      }
+
+      client_header_timeout 60;
+      client_body_timeout 60;
+      keepalive_timeout 60;
+
+      gzip on;
+      gzip_comp_level 4;
+      gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+  }
+}

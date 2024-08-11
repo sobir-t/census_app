@@ -1,0 +1,23 @@
+"DOCKER_TLS_VERIFY=1"
+"JAVA_OPTIONS=-Djava.awt.headless=true -Dhudson.model.DirectoryBrowserSupport.CSP="default-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src 'self' 'unsafe-inline' data:;""
+"DOCKER_HOST=tcp://nas10ac85:2376"
+
+Jenkins pipeline
+
+pipeline {
+    agent any
+    
+    tools {
+      dockerTool 'docker'
+    }
+    
+    stages {
+        stage('Installing docker') {
+            steps {
+                sh '''
+                    docker run hello-world
+                '''
+            }
+        }
+    }
+} 

@@ -13,6 +13,7 @@ export default function LandingPage() {
   const [authUser, setAuthUser] = useState<AuthUser | null>(null);
 
   useEffect(() => {
+    document.title = "Census App | Dashboard";
     getAuthUser().then((data) => {
       setAuthUser(data);
     });

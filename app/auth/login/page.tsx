@@ -4,7 +4,7 @@
 
 import * as z from "zod";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -40,6 +40,10 @@ export default function LoginPage() {
       });
     });
   };
+
+  useEffect(() => {
+    document.title = "Census App | Login";
+  }, []);
 
   return (
     <main className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
