@@ -1,36 +1,15 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Census App for QA testing
 
-## Getting Started
+Thin is fullstack application for QA testers training. It has nothing to do with real Census project. Sole intention for this application is to facilitate QA testing for all 3 layers: UI, API, Database testing. When creating new demographic records please don't use any PII (Personal Identifiable Information) rathe please create records of unreal people. Good practice for QA environment when creating dummy data is to utilize `FAKE` word in first and last names and emails.
 
-First, run the development server:
+## Local deployment
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+If you have this repository assigned as part of interview preparation then you should use local deployment instructions [here](my_support/local_deployment_instructions.md).
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Remote deployment
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+If you are learning QA automation framework and would like to have this application on remote server within your home network then you can take advantage of exercising some linux, docker and development operations by using remote deployment instructions [here](my_support/remote_deployment_instructions.md).
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## License
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Licensed under the [MIT license](LICENSE.md).
