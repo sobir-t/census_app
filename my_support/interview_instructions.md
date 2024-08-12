@@ -1,5 +1,12 @@
 # Interview preparation instructions
 
+Here are instructions on interview preparations. If you haven't deployed application locally then please follow instructions [here](my_support/local_deployment_instructions.md). You are expected to be on interview with
+
+- locally running census app and postgres database
+- Automation framework with test scenarios
+- DBeaver connected to postgres database
+- [Postman](https://www.postman.com/) with collection having API requests to census app.
+
 ## Content
 
 - [1 UI test preconditions](#1-ui-test-preconditions)

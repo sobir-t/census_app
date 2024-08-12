@@ -47,8 +47,11 @@ export const getHouseholdByUserId = async (
  * @param email string
  */
 export const getHouseholdByUserEmail = async (
-  email: string
+  email: string | undefined
 ): Promise<{ success?: string; household?: Household; error?: string; db_error?: string; code: number }> => {
+  if (typeof email != "string" || !email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/))
+    return { error: "user email is required and must be email format", code: 403 };
+
   const authUser: AuthUser | null = await getAuthUser();
   if (!authUser) return { error: "your session expired. please log in", code: 401 };
 
