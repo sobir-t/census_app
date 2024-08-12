@@ -31,7 +31,7 @@ Please have your test automation framework setup using next software:
 - IntelliJ IDE
 - Java
 - Maven
-- Cucumber (optional)
+- Cucumber or JUnit or TestNG
 - Selenium
 - Rest assured
 - JDBC
@@ -49,9 +49,9 @@ Acceptance criteria:
 1. **User should be able to add new person record to household on UI.**
    You can create your own Cucumber steps (BDD) or test scripts (TDD) to achieve goal. _As optional for extra points please save added personal demographic info to storage as POJO object or any other data format of your choice._
 
-2. **Added person's record should be returned in API call.** Validate that added person's data returned in API call with correct values submitted on UI. Please refer to _As optional for extra points please use [jackson-databind](https://github.com/FasterXML/jackson-databind) compare POJO objects or compare saved data in your storage using data format of your choice._
+2. **Added person's record should be returned in API call.** Validate that added person's data returned in API call with correct values submitted on UI. Please refer to [API documentation](#api-documentation) below. _As optional for extra points please use [jackson-databind](https://github.com/FasterXML/jackson-databind) to create and compare POJO objects or compare saved data in your storage using data format of your choice._
 
-3. **Added person's record should be found in database.** please review database schema on DBeaver to understand table relationships. Using your JDBC validate that new record saved with correct data. _As optional for extra points please use [jackson-databind](https://github.com/FasterXML/jackson-databind) compare POJO objects or compare saved data in your storage using data format of your choice._
+3. **Added person's record should be found in database.** please review database schema on DBeaver to understand table relationships. Using your JDBC validate that new record saved with correct data. _As optional for extra points please use [jackson-databind](https://github.com/FasterXML/jackson-databind) to create and compare POJO objects or compare saved data in your storage using data format of your choice._
 
 4. **As optional for extra points please** create automation scenarios updating, deleting records on UI
 
@@ -76,7 +76,7 @@ Token will be saved in cookies and will be automatically available for next API 
 
 **GET** `http://localhost/api/record/user/email/[email]`. Please have your email instead of `[email]` endpoint parameter.
 
-3. Get records with query parameters
+3. Get records for user by query parameters
 
 **GET** `http://localhost/api/record/user`. Query params:
 
