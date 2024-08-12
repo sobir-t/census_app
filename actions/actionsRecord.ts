@@ -5,6 +5,7 @@ import {
   dbDeleteRecordsUnderHouseholdId,
   dbGetRecordById,
   dbGetRecordsUnderHouseholdId,
+  dbGetRelationshipsUnderUserEmail,
   dbGetRelationshipsUnderUserId,
   dbSaveRecord,
   dbSaveRelative,
@@ -295,6 +296,27 @@ export const getRelativesUnderUserId = async (
 };
 
 /**
+ * Returns relatives information under user by email. Validates if user authorized
+ * @param userId number
+ */
+export const getRelativesUnderUserEmail = async (
+  email: string | undefined
+): Promise<{ success?: string; relatives?: Relative[]; error?: string; db_error?: string; code: number }> => {
+  if (typeof email != "string" || !email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/))
+    return { error: "user email is required and must be email format", code: 403 };
+
+  const authUser: AuthUser | null = await getAuthUser();
+  if (!authUser) return { error: "your session expired. please log in", code: 401 };
+
+  if (email != authUser.email && authUser.role != "ADMIN") return { error: "You don't have permission to get someone's relatives", code: 401 };
+
+  const { relatives, db_error } = await dbGetRelationshipsUnderUserEmail(email);
+  if (db_error) return { error: `Failed to get relative information for user with email '${email}'.`, code: 500 };
+  if (!relatives || !relatives.length) return { error: `No relative data found for user with email '${email}'.`, code: 404 };
+  return { success: "Relatives information found.", relatives, code: 200 };
+};
+
+/**
  * Saves new relative information. Validates if user authorized
  * @param newRelative is object of { userId: number;
  *   relationship: "SELF" | "SPOUSE" | "PARTNER" | "BIOLOGICAL_CHILD" | "ADOPTED_CHILD" | \
@@ -339,7 +361,7 @@ export const updateRelativeInfo = async (
 };
 
 /**
- * Returns records with relationship under user user by userId. Validates if user authorized
+ * Returns records with relationship under user by userId. Validates if user authorized
  * @param userId number
  */
 export const getRecordsWithRelativesInfoUnderUserId = async (
@@ -370,6 +392,41 @@ export const getRecordsWithRelativesInfoUnderUserId = async (
   }
 
   return { success: `Records with relationship found for user by id '${userId}'`, recordsWithRelationship, code: 200 };
+};
+
+/**
+ * Returns records with relationship under user by email. Validates if user authorized
+ * @param userId number
+ */
+export const getRecordsWithRelativesInfoUnderUserEmail = async (
+  email: string | undefined
+): Promise<{ success?: string; recordsWithRelationship?: RecordWithRelationship[]; error?: string; db_error?: string; code: number }> => {
+  if (typeof email != "string" || !email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/))
+    return { error: "user email is required and must be email format", code: 403 };
+
+  const result = await getHouseholdByUserEmail(email); // Validates if user authorized
+  if (!result.household) return result;
+
+  const { records, db_error } = await dbGetRecordsUnderHouseholdId(result.household.id);
+  if (db_error) return { error: `Failed to get records for user with email '${email}'.`, db_error, code: 500 };
+  if (!records || !records.length) return { error: `No records found for user with email '${email}'.`, code: 404 };
+
+  const { relatives } = await getRelativesUnderUserEmail(email);
+
+  const recordsWithRelationship: RecordWithRelationship[] = [];
+
+  if (relatives?.length) {
+    records.forEach((record) => {
+      const relative = relatives.find((r) => r.recordId == record.id) || undefined;
+      recordsWithRelationship.push({ relative, record });
+    });
+  } else {
+    records.forEach((record) => {
+      recordsWithRelationship.push({ relative: undefined, record });
+    });
+  }
+
+  return { success: `Records with relationship found for user with email '${email}'`, recordsWithRelationship, code: 200 };
 };
 
 /**

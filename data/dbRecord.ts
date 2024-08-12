@@ -89,6 +89,17 @@ export const dbGetRelationshipsUnderUserId = async (userId: number): Promise<{ r
   }
 };
 
+export const dbGetRelationshipsUnderUserEmail = async (email: string): Promise<{ relatives?: Relative[]; db_error?: string }> => {
+  try {
+    const relatives: Relative[] = await db.relative.findMany({
+      where: { User: { email } },
+    });
+    return { relatives };
+  } catch (e: any) {
+    return { db_error: e.message };
+  }
+};
+
 export const dbSaveRelative = async (newRelative: Omit<Relative, "id">): Promise<{ relative?: Relative; db_error?: string }> => {
   try {
     const relative: Relative = await db.relative.create({ data: newRelative });

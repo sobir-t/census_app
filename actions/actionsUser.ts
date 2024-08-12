@@ -9,12 +9,47 @@ import { AuthUser, Obj } from "@/types/types";
 import { getAuthUser } from "./actionsAuth";
 
 /**
+ * Returns user by given id. Validate if user authorized
+ */
+export const getUserById = async (userId: number | undefined): Promise<{ success?: string; user?: User; error?: string; code: number }> => {
+  if (typeof userId != "number") return { error: "user id is required and must be number", code: 403 };
+
+  const authUser: AuthUser | null = await getAuthUser();
+  if (!authUser) return { error: "your session expired. please log in", code: 401 };
+
+  if (userId != parseInt(authUser.id as string) && authUser.role != "ADMIN")
+    return { error: "You don't have permission to get someone's relatives", code: 401 };
+
+  const user = await dbGetUserById(userId);
+  if (!user) return { error: `No user by id '${userId}' found.`, code: 404 };
+
+  return { success: "User found.", user, code: 200 };
+};
+
+/**
+ * Returns user by given email. Validate if user authorized
+ */
+export const getUserByEmail = async (email: string | undefined): Promise<{ success?: string; user?: User; error?: string; code: number }> => {
+  if (typeof email != "string" || !email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/))
+    return { error: "user email is required and must be correct email format", code: 403 };
+
+  const authUser: AuthUser | null = await getAuthUser();
+  if (!authUser) return { error: "your session expired. please log in", code: 401 };
+
+  if (email != authUser.email && authUser.role != "ADMIN") return { error: "You don't have permission to get someone's relatives", code: 401 };
+
+  const user = await dbGetUserByEmail(email);
+  if (!user) return { error: `No user with email '${email}' found.`, code: 404 };
+
+  return { success: "User found.", user, code: 200 };
+};
+
+/**
  * Register new user. No user authorization
- * @param values
- * presented as object { email: email format, password: string min 6, max 20 characters, name: string, image: string url to avatar image }
+ * @param values is object of { email: string; password: string; name: string; image: string; }
  */
 export const register = async (
-  values: Obj
+  values: z.infer<typeof RegisterUserSchema>
 ): Promise<{ success?: string; user?: User; error?: string; data?: any; db_error?: string; code: number }> => {
   const validatedFields = RegisterUserSchema.safeParse(values);
 
