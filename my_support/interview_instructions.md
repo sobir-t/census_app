@@ -75,3 +75,10 @@ Token will be saved in cookies and will be automatically available for next API 
 2. Get records for user by email
 
 **GET** `http://localhost/api/record/user/email/[email]`. Please have your email instead of `[email]` endpoint parameter.
+
+3. Get records with query parameters
+
+**GET** `http://localhost/api/record/user`. Query params:
+
+- id: number
+- email: string, email format
