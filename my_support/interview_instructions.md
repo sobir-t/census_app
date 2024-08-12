@@ -70,7 +70,7 @@ Acceptance criteria:
 }
 ```
 
-Token will be saved in cookies and will be automatically available for next API calls. So non need to save token. Token will be expired in 4 hours.
+Token will be saved in cookies and will be automatically available for next API calls. So no need to save token. Token will be expired in 4 hours.
 
 2. Get records for user by email
 
