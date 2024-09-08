@@ -1,5 +1,5 @@
 // /api/hello
 
 export async function GET() {
-  return Response.json({ text: "Hello" }, { status: 301 });
+  return Response.json({ text: "Hello" }, { status: 200 });
 }
