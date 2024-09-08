@@ -75,7 +75,7 @@ export const UpdatePasswordSchema = z.object({
     }),
 });
 
-export const STATES = [
+export const STATE = [
   "AL",
   "AK",
   "AZ",
@@ -143,7 +143,7 @@ export const HouseholdSchema = z.object({
   address1: z.string({ required_error: "Address 1 is required." }),
   address2: z.string().optional(),
   city: z.string({ required_error: "City is required." }),
-  state: z.enum(STATES),
+  state: z.enum(STATE),
   zip: z.string({ required_error: "zip code is required." }).regex(/^\d{5}$/, { message: "zip code must be 5 digits." }),
 });
 
@@ -157,7 +157,7 @@ export const UpdateHouseholdSchema = z.object({
   address1: z.string({ required_error: "Address 1 is required." }),
   address2: z.string().optional(),
   city: z.string({ required_error: "City is required." }),
-  state: z.enum(STATES),
+  state: z.enum(STATE),
   zip: z.string({ required_error: "zip code is required." }).regex(/^\d{5}$/, { message: "zip code must be 5 digits." }),
 });
 

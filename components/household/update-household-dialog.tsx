@@ -4,7 +4,7 @@ import React, { useState, useTransition } from "react";
 import { Dispatch, SetStateAction } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { HOME_TYPE, HouseholdSchema, OWNERSHIP, STATES } from "@/schemas";
+import { HOME_TYPE, HouseholdSchema, OWNERSHIP, STATE } from "@/schemas";
 import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -204,7 +204,7 @@ export default function UpdateHouseholdDialog({ authUser, household, setEditHous
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {STATES.map((state) => (
+                        {STATE.map((state) => (
                           <SelectItem key={state} value={state}>
                             {state}
                           </SelectItem>

@@ -100,7 +100,7 @@ export default function Navbar({ authUser }: { authUser: AuthUser | null }) {
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 <div className="flex flex-shrink-0 items-center">
-                  <Image className="h-8 w-8 rounded-full" src="/logo.jpg" alt="Logo" width="8000" height="8000" data-testid="logo" />
+                  <Image className="h-8 w-8 rounded-full" src="/logo.svg" alt="Logo" width="8000" height="8000" data-testid="logo" />
                 </div>
                 <div className="sm:ml-6 sm:block">
                   <div className="nav-bar-buttons flex space-x-4" data-testid="navbar-buttons">
