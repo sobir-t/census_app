@@ -67,7 +67,7 @@ export const dbSaveNewUser = async ({
   householdId?: number;
 }): Promise<{ user?: User; db_error?: string }> => {
   try {
-    const user = await db.user.create({
+    const user: User = await db.user.create({
       data: {
         name,
         email,
