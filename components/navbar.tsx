@@ -14,6 +14,7 @@ function classNames(...classes: string[]) {
 interface NavigationProps {
   name: string;
   href: string;
+  new_tab: boolean;
   current: boolean;
 }
 
@@ -29,9 +30,9 @@ interface ProfileProps {
 export default function Navbar({ authUser }: { authUser: AuthUser | null }) {
   const pathname = usePathname();
   let navigation: NavigationProps[] = [
-    { name: "About", href: "/", current: pathname == "/" },
-    { name: "Docs", href: "/documentation", current: pathname == "/documentation" },
-    { name: "Swagger", href: "#", current: false },
+    { name: "About", href: "/", new_tab: false, current: pathname == "/" },
+    { name: "Docs", href: "/documentation", new_tab: false, current: pathname == "/documentation" },
+    { name: "Swagger", href: "http://localhost:3010/swagger", new_tab: true, current: false },
   ];
 
   let profile: ProfileProps;
@@ -39,11 +40,11 @@ export default function Navbar({ authUser }: { authUser: AuthUser | null }) {
   if (authUser) {
     if (authUser.role == "ADMIN")
       navigation = [
-        { name: "Dashboard", href: "/dashboard", current: pathname == "/dashboard" },
-        { name: "Records", href: "/records", current: pathname == "/records" },
+        { name: "Dashboard", href: "/dashboard", new_tab: false, current: pathname == "/dashboard" },
+        { name: "Records", href: "/records", new_tab: false, current: pathname == "/records" },
         ...navigation,
       ];
-    else navigation = [{ name: "Dashboard", href: "/dashboard", current: pathname == "/dashboard" }, ...navigation];
+    else navigation = [{ name: "Dashboard", href: "/dashboard", new_tab: false, current: pathname == "/dashboard" }, ...navigation];
     profile = {
       src: authUser.image || "/account.svg",
       menuItems: [
@@ -100,7 +101,7 @@ export default function Navbar({ authUser }: { authUser: AuthUser | null }) {
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 <div className="flex flex-shrink-0 items-center">
-                  <Image className="h-8 w-8 rounded-full" src="/logo.jpg" alt="Logo" width="8000" height="8000" data-testid="logo" />
+                  <Image className="h-8 w-8 rounded-full" src="/logo.svg" alt="Logo" width="8000" height="8000" data-testid="logo" />
                 </div>
                 <div className="sm:ml-6 sm:block">
                   <div className="nav-bar-buttons flex space-x-4" data-testid="navbar-buttons">
@@ -109,6 +110,7 @@ export default function Navbar({ authUser }: { authUser: AuthUser | null }) {
                         key={item.name}
                         data-testid={`navbar-button-${item.name.replaceAll(/\s+/g, "-")}`}
                         href={item.href}
+                        target={item.new_tab ? "_blank" : "_self"}
                         className={classNames(
                           item.current ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white",
                           "rounded-md px-3 py-2 text-sm font-medium",

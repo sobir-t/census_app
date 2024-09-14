@@ -212,6 +212,9 @@ export const updateLienholder = async ({
   const result1 = await dbGetLienholderByName(name);
   if (result1.lienholder) return { error: `Lienholder by name '${name}" already exist.`, lienholder: result1.lienholder, code: 403 };
 
+  const result2 = await dbGetLienholderById(id);
+  if (!result2.lienholder) return { error: `Lienholder by id '${id}' doesn't exist`, code: 404 };
+
   const { lienholder, db_error } = await dbUpdateLienholder({ id, name });
   if (!lienholder || db_error) return { error: "Failed to update lienholders.", db_error, code: 500 };
   return { success: "Successfully updated lienholder.", lienholder, code: 201 };

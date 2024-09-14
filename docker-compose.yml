@@ -15,17 +15,16 @@ services:
       - postgres-data:/var/lib/postgresql/data/
 
   # Swagger server is work in progress
-  # swagger_ui:
-  #   image: "swaggerapi/swagger-ui"
-  #   container_name: "swagger-ui"
-  #   ports:
-  #     - 80:3001
-  #   environment:
-  #     - BASE_URL=/swagger
-  #     - SWAGGER_JSON=/swagger/swagger.json
-  #   volumes:
-  #     - swagger-ui:/foo swaggerapi/swagger-ui
+  swagger_ui:
+    image: "swaggerapi/swagger-ui"
+    container_name: "swagger-ui"
+    ports:
+      - 3010:8080
+    environment:
+      - BASE_URL=/swagger
+      - SWAGGER_JSON=/swagger/swagger.json
+    volumes:
+      - ./swagger:/swagger
 
 volumes:
   postgres-data:
-  # swagger-ui:
