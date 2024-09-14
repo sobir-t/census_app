@@ -27,7 +27,9 @@
   "paths": {
     "/hello": {
       "get": {
-        "summary": "API server sanity check",
+        "summary": "Say hello to census-app API server",
+        "tags": ["test"],
+        "security": [],
         "responses": {
           "200": {
             "description": "API server is up and running.",
@@ -36,9 +38,811 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "text": {
-                      "type": "string"
-                    }
+                    "text": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/register": {
+      "post": {
+        "summary": "Register new user",
+        "tags": ["user authorization"],
+        "security": [],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "description": "New unique user email in 'user@example.com' format",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "email"
+            }
+          },
+          {
+            "name": "password",
+            "description": "Your password, minimum 6 characters",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minimum": 6,
+              "format": "password"
+            }
+          },
+          {
+            "name": "name",
+            "description": "Your name for your account profile",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "image",
+            "description": "Avatar image, please select one:",
+            "in": "path",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/Avatars" }
+          }
+        ],
+        "responses": {
+          "401": { "$ref": "#/components/responses/Invalid_fields" },
+          "500": { "$ref": "#/components/responses/Internal_error" },
+          "403": { "$ref": "#/components/responses/Not_allowed" },
+          "201": {
+            "description": "Successfully registered new user.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "string" },
+                    "user": { "$ref": "#/components/schemas/User" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/password": {
+      "post": {
+        "summary": "Update password",
+        "tags": ["user authorization"],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "user id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "oldPassword",
+            "description": "Old password",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minimum": 6,
+              "format": "password"
+            }
+          },
+          {
+            "name": "newPassword",
+            "description": "Old password",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minimum": 6,
+              "maximum": 20,
+              "format": "password"
+            }
+          }
+        ],
+        "responses": {
+          "401": { "$ref": "#/components/responses/Not_authorized" },
+          "500": { "$ref": "#/components/responses/Internal_error" },
+          "403": { "$ref": "#/components/responses/Not_allowed" },
+          "404": { "$ref": "#/components/responses/Not_found" },
+          "201": {
+            "description": "Successfully updated password!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "string" },
+                    "user": { "$ref": "#/components/schemas/User" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/user": {
+      "get": {
+        "summary": "Get users by query parameters",
+        "tags": ["user"],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "user id",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "email",
+            "description": "user email",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "email"
+            }
+          }
+        ],
+        "responses": {
+          "401": { "$ref": "#/components/responses/Not_authorized" },
+          "403": { "$ref": "#/components/responses/Not_allowed" },
+          "404": { "$ref": "#/components/responses/Not_found" },
+          "200": {
+            "description": "Successfully found user.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "string" },
+                    "user": { "$ref": "#/components/schemas/User" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update user",
+        "tags": ["user"],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "user id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "email",
+            "description": "user email",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "email"
+            }
+          },
+          {
+            "name": "name",
+            "description": "user name",
+            "in": "path",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minimum": 1,
+              "maximum": 20
+            }
+          },
+          {
+            "name": "image",
+            "description": "Avatar image, please select one:",
+            "in": "path",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/Avatars"
+            }
+          },
+          {
+            "name": "role",
+            "description": "User role",
+            "in": "path",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/Role"
+            }
+          },
+          {
+            "name": "householdId",
+            "description": "User's household Id",
+            "in": "path",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "401": { "$ref": "#/components/responses/Not_authorized" },
+          "500": { "$ref": "#/components/responses/Internal_error" },
+          "403": { "$ref": "#/components/responses/Not_allowed" },
+          "201": {
+            "description": "Successfully updated user!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "string" },
+                    "user": { "$ref": "#/components/schemas/User" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete user",
+        "tags": ["user"],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "user id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "401": { "$ref": "#/components/responses/Not_authorized" },
+          "500": { "$ref": "#/components/responses/Internal_error" },
+          "403": { "$ref": "#/components/responses/Not_allowed" },
+          "404": { "$ref": "#/components/responses/Not_found" },
+          "201": {
+            "description": "Successfully deleted user!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/user/email/{email}": {
+      "get": {
+        "summary": "Get user by email",
+        "tags": ["user"],
+        "parameters": [
+          {
+            "name": "email",
+            "description": "user email",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "email"
+            }
+          }
+        ],
+        "responses": {
+          "401": { "$ref": "#/components/responses/Not_authorized" },
+          "403": { "$ref": "#/components/responses/Not_allowed" },
+          "404": { "$ref": "#/components/responses/Not_found" },
+          "200": {
+            "description": "Successfully found user.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "string" },
+                    "user": { "$ref": "#/components/schemas/User" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/user/id/{id}": {
+      "get": {
+        "summary": "Get user by id",
+        "tags": ["user"],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "user id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "401": { "$ref": "#/components/responses/Not_authorized" },
+          "403": { "$ref": "#/components/responses/Not_allowed" },
+          "404": { "$ref": "#/components/responses/Not_found" },
+          "200": {
+            "description": "Successfully found user.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "string" },
+                    "user": { "$ref": "#/components/schemas/User" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/lienholder": {
+      "get": {
+        "summary": "Get all lienholders",
+        "tags": ["lienholder"],
+        "responses": {
+          "404": { "$ref": "#/components/responses/Not_found" },
+          "200": {
+            "description": "Successfully found lienholders.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "string" },
+                    "lienholders": { "$ref": "#/components/schemas/Lienholder" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Save new lienholder",
+        "tags": ["lienholder"],
+        "parameters": [
+          {
+            "name": "name",
+            "description": "Lienholder name",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "500": { "$ref": "#/components/responses/Internal_error" },
+          "403": { "$ref": "#/components/responses/Not_allowed" },
+          "201": {
+            "description": "Successfully saved new lienholder.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "string" },
+                    "lienholder": { "$ref": "#/components/schemas/Lienholder" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update lienholder",
+        "tags": ["lienholder"],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Lienholder id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "name",
+            "description": "Lienholder name",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "500": { "$ref": "#/components/responses/Internal_error" },
+          "403": { "$ref": "#/components/responses/Not_allowed" },
+          "404": { "$ref": "#/components/responses/Not_found" },
+          "201": {
+            "description": "Successfully updated lienholder.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "string" },
+                    "lienholder": { "$ref": "#/components/schemas/Lienholder" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete lienholder",
+        "tags": ["lienholder"],
+        "parameters": [
+          {
+            "name": "name",
+            "description": "Lienholder name",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "500": { "$ref": "#/components/responses/Internal_error" },
+          "403": { "$ref": "#/components/responses/Not_allowed" },
+          "404": { "$ref": "#/components/responses/Not_found" },
+          "201": {
+            "description": "Successfully deleted lienholder.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/household": {
+      "get": {
+        "summary": "Get household under users by query parameters",
+        "tags": ["household"],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "user id",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "email",
+            "description": "user email",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "email"
+            }
+          }
+        ],
+        "responses": {
+          "401": { "$ref": "#/components/responses/Not_authorized" },
+          "403": { "$ref": "#/components/responses/Not_allowed" },
+          "404": { "$ref": "#/components/responses/Not_found" },
+          "200": {
+            "description": "Successfully found household.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "string" },
+                    "household": { "$ref": "#/components/schemas/Household" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Create household",
+        "tags": ["household"],
+        "parameters": [
+          {
+            "name": "homeType",
+            "description": "Home type, please select from dropdown.",
+            "in": "path",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/HomeType" }
+          },
+          {
+            "name": "ownership",
+            "description": "Home ownership, please select from dropdown.",
+            "in": "path",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/Ownership" }
+          },
+          {
+            "name": "lienholderId",
+            "description": "Lienholder id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "address1",
+            "description": "Household Address line 1",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "address2",
+            "description": "Household Address line 2",
+            "in": "path",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "city",
+            "description": "Household city",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "state",
+            "description": "Household state, please select from dropdown",
+            "in": "path",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/State" }
+          },
+          {
+            "name": "zip",
+            "description": "Household zip",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "minimum": 5, "maximum": 5 }
+          }
+        ],
+        "responses": {
+          "401": { "$ref": "#/components/responses/Not_authorized" },
+          "500": { "$ref": "#/components/responses/Internal_error" },
+          "403": { "$ref": "#/components/responses/Not_allowed" },
+          "201": {
+            "description": "Successfully created household!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "string" },
+                    "household": { "$ref": "#/components/schemas/Household" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update household",
+        "tags": ["household"],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "household id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "homeType",
+            "description": "Home type, please select from dropdown.",
+            "in": "path",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/HomeType" }
+          },
+          {
+            "name": "ownership",
+            "description": "Home ownership, please select from dropdown.",
+            "in": "path",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/Ownership" }
+          },
+          {
+            "name": "lienholderId",
+            "description": "Lienholder id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "address1",
+            "description": "Household Address line 1",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "address2",
+            "description": "Household Address line 2",
+            "in": "path",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "city",
+            "description": "Household city",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "state",
+            "description": "Household state, please select from dropdown",
+            "in": "path",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/State" }
+          },
+          {
+            "name": "zip",
+            "description": "Household zip",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "minimum": 5, "maximum": 5 }
+          }
+        ],
+        "responses": {
+          "401": { "$ref": "#/components/responses/Not_authorized" },
+          "500": { "$ref": "#/components/responses/Internal_error" },
+          "403": { "$ref": "#/components/responses/Not_allowed" },
+          "201": {
+            "description": "Successfully updated household!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "string" },
+                    "household": { "$ref": "#/components/schemas/Household" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/household/id/{id}": {
+      "get": {
+        "summary": "Get household by id",
+        "tags": ["household"],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "household id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "401": { "$ref": "#/components/responses/Not_authorized" },
+          "403": { "$ref": "#/components/responses/Not_allowed" },
+          "404": { "$ref": "#/components/responses/Not_found" },
+          "200": {
+            "description": "Successfully found household.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "string" },
+                    "household": { "$ref": "#/components/schemas/Household" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/household/user/email/{email}": {
+      "get": {
+        "summary": "Get household under user by email",
+        "tags": ["household"],
+        "parameters": [
+          {
+            "name": "email",
+            "description": "user email",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "email"
+            }
+          }
+        ],
+        "responses": {
+          "401": { "$ref": "#/components/responses/Not_authorized" },
+          "403": { "$ref": "#/components/responses/Not_allowed" },
+          "404": { "$ref": "#/components/responses/Not_found" },
+          "200": {
+            "description": "Successfully found household.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "string" },
+                    "household": { "$ref": "#/components/schemas/Household" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/household/user/id/{id}": {
+      "get": {
+        "summary": "Get household under user by id",
+        "tags": ["household"],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "user id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "401": { "$ref": "#/components/responses/Not_authorized" },
+          "403": { "$ref": "#/components/responses/Not_allowed" },
+          "404": { "$ref": "#/components/responses/Not_found" },
+          "200": {
+            "description": "Successfully found household.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "string" },
+                    "household": { "$ref": "#/components/schemas/Household" }
                   }
                 }
               }
@@ -49,15 +853,238 @@
     }
   },
   "components": {
-    "securitySchemes": {
-      "census_app_auth": {
-        "type": "oauth2",
-        "flows": {
-          "implicit": {
-            "authorizationUrl": "http://census-app:3000/api/auth/login"
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "role": {
+            "$ref": "#/components/schemas/Role"
+          },
+          "householdId": {
+            "type": ["string", "null"]
+          }
+        }
+      },
+      "Role": {
+        "type": "string",
+        "enum": ["USER", "ADMIN"]
+      },
+      "Avatars": {
+        "type": "string",
+        "enum": [
+          "/images/1.avif",
+          "/images/2.avif",
+          "/images/3.avif",
+          "/images/4.avif",
+          "/images/5.avif",
+          "/images/6.avif",
+          "/images/7.avif",
+          "/images/8.avif",
+          "/images/9.avif",
+          "/images/10.avif",
+          "/images/11.avif",
+          "/images/12.avif",
+          "/images/13.avif"
+        ]
+      },
+      "Lienholder": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "number" },
+          "name": { "type": "string" }
+        }
+      },
+      "Household": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "number" },
+          "homeType": { "$ref": "#/components/schemas/HomeType" },
+          "ownership": { "$ref": "#/components/schemas/Ownership" },
+          "lienholderId": { "type": "number" },
+          "address1": { "type": "string" },
+          "address2": { "type": "string" },
+          "city": { "type": "string" },
+          "state": { "$ref": "#/components/schemas/State" },
+          "zip": { "type": "string" }
+        }
+      },
+      "HomeType": {
+        "type": "string",
+        "enum": ["HOUSE", "APARTMENT", "MOBILE_HOME", "SHELTER"]
+      },
+      "Ownership": {
+        "type": "string",
+        "enum": ["MORTGAGE", "OWN", "RENT", "FREE_LIVING"]
+      },
+      "State": {
+        "type": "string",
+        "enum": [
+          "AL",
+          "AK",
+          "AZ",
+          "AR",
+          "CA",
+          "CO",
+          "CT",
+          "DE",
+          "DC",
+          "FL",
+          "GA",
+          "HI",
+          "ID",
+          "IL",
+          "IN",
+          "IA",
+          "KS",
+          "KY",
+          "LA",
+          "ME",
+          "MD",
+          "MA",
+          "MI",
+          "MN",
+          "MS",
+          "MO",
+          "MT",
+          "NE",
+          "NV",
+          "NH",
+          "NJ",
+          "NM",
+          "NY",
+          "NC",
+          "ND",
+          "OH",
+          "OK",
+          "OR",
+          "PA",
+          "RI",
+          "SC",
+          "SD",
+          "TN",
+          "TX",
+          "UT",
+          "VT",
+          "VA",
+          "WA",
+          "WV",
+          "WI",
+          "WY"
+        ]
+      }
+    },
+    "responses": {
+      "Invalid_fields": {
+        "description": "Invalid fields provided",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": { "type": "string" },
+                "data": [
+                  {
+                    "validation": "string",
+                    "code": "string",
+                    "message": "string",
+                    "path": ["string"]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "Internal_error": {
+        "description": "Internal server error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": { "type": "string" },
+                "db_error": { "type": "string" }
+              }
+            }
+          }
+        }
+      },
+      "Not_allowed": {
+        "description": "Not allowed action",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": { "type": "string" }
+              }
+            }
+          }
+        }
+      },
+      "Not_authorized": {
+        "description": "You are not authorized for this action",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": { "type": "string" }
+              }
+            }
+          }
+        }
+      },
+      "Not_found": {
+        "description": "Resource not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": { "type": "string" }
+              }
+            }
           }
         }
       }
+    },
+    "securitySchemes": {
+      "basicAuth": { "type": "http", "scheme": "basic" }
     }
-  }
+  },
+  "tags": [
+    {
+      "name": "test",
+      "description": "API server sanity check"
+    },
+    {
+      "name": "user authorization",
+      "description": "Manage user authorization"
+    },
+    {
+      "name": "user",
+      "description": "Manage users"
+    },
+    {
+      "name": "lienholder",
+      "description": "Manage lienholder"
+    },
+    {
+      "name": "household",
+      "description": "Manage household"
+    }
+  ],
+  "security": [{ "basicAuth": [] }]
 }
