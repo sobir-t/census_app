@@ -1,3 +1,5 @@
+// /api/auth/password
+
 import { updatePassword } from "@/actions/actionsUser";
 
 export async function POST(request: Request) {
