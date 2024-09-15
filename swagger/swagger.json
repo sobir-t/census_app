@@ -850,6 +850,960 @@
           }
         }
       }
+    },
+    "/api/record": {
+      "put": {
+        "summary": "create new record",
+        "tags": ["record"],
+        "parameters": [
+          {
+            "name": "householdId",
+            "description": "Household member's household id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "firstName",
+            "description": "Household member's first name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "lastName",
+            "description": "Household member's last name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dob",
+            "description": "Household member's date of birth",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "01/01/2001",
+              "format": "date",
+              "pattern": "MM/dd/yyyy"
+            }
+          },
+          {
+            "name": "gender",
+            "description": "Household member's gender",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Gender"
+            }
+          },
+          {
+            "name": "telephone",
+            "description": "Household member's telephone",
+            "in": "path",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "hispanic",
+            "description": "Is household member hispanic?",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Hispanic"
+            }
+          },
+          {
+            "name": "hispanicOther",
+            "description": "Is household member hispanic value is 'OTHER' then please specify",
+            "in": "path",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "race",
+            "description": "Household member's race",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Race"
+            }
+          },
+          {
+            "name": "raceOther",
+            "description": "Is household member race value is 'OTHER' then please specify",
+            "in": "path",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "otherStay",
+            "description": "Does household member has other stay?",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/OtherStay"
+            }
+          }
+        ],
+        "responses": {
+          "401": { "$ref": "#/components/responses/Not_authorized" },
+          "403": { "$ref": "#/components/responses/Not_allowed" },
+          "404": { "$ref": "#/components/responses/Not_found" },
+          "500": { "$ref": "#/components/responses/Internal_error" },
+          "201": {
+            "description": "Successfully saved new record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "string" },
+                    "household": { "$ref": "#/components/schemas/Record" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "update record",
+        "tags": ["record"],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Record id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "householdId",
+            "description": "Household member's household id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "firstName",
+            "description": "Household member's first name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "lastName",
+            "description": "Household member's last name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dob",
+            "description": "Household member's date of birth",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "01/01/2001",
+              "format": "date",
+              "pattern": "MM/dd/yyyy"
+            }
+          },
+          {
+            "name": "gender",
+            "description": "Household member's gender",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Gender"
+            }
+          },
+          {
+            "name": "telephone",
+            "description": "Household member's telephone",
+            "in": "path",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "hispanic",
+            "description": "Is household member hispanic?",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Hispanic"
+            }
+          },
+          {
+            "name": "hispanicOther",
+            "description": "Is household member hispanic value is 'OTHER' then please specify",
+            "in": "path",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "race",
+            "description": "Household member's race",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Race"
+            }
+          },
+          {
+            "name": "raceOther",
+            "description": "Is household member race value is 'OTHER' then please specify",
+            "in": "path",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "otherStay",
+            "description": "Does household member has other stay?",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/OtherStay"
+            }
+          }
+        ],
+        "responses": {
+          "401": { "$ref": "#/components/responses/Not_authorized" },
+          "403": { "$ref": "#/components/responses/Not_allowed" },
+          "404": { "$ref": "#/components/responses/Not_found" },
+          "500": { "$ref": "#/components/responses/Internal_error" },
+          "201": {
+            "description": "Successfully updated record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "string" },
+                    "household": { "$ref": "#/components/schemas/Record" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/record/id/{id]": {
+      "get": {
+        "summary": "Get record by id",
+        "tags": ["record"],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "record id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "401": { "$ref": "#/components/responses/Not_authorized" },
+          "403": { "$ref": "#/components/responses/Not_allowed" },
+          "404": { "$ref": "#/components/responses/Not_found" },
+          "200": {
+            "description": "Successfully found record.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "string" },
+                    "household": { "$ref": "#/components/schemas/Record" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete record by id",
+        "tags": ["record"],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "record id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "401": { "$ref": "#/components/responses/Not_authorized" },
+          "500": { "$ref": "#/components/responses/Internal_error" },
+          "403": { "$ref": "#/components/responses/Not_allowed" },
+          "404": { "$ref": "#/components/responses/Not_found" },
+          "201": {
+            "description": "Successfully deleted record!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/record/user": {
+      "get": {
+        "summary": "Get records under users by query parameters",
+        "tags": ["record"],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "user id",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "email",
+            "description": "user email",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "email"
+            }
+          }
+        ],
+        "responses": {
+          "401": { "$ref": "#/components/responses/Not_authorized" },
+          "403": { "$ref": "#/components/responses/Not_allowed" },
+          "404": { "$ref": "#/components/responses/Not_found" },
+          "200": {
+            "description": "Successfully found records.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "string" },
+                    "household": { "$ref": "#/components/schemas/Record" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/record/user/id/{id}": {
+      "get": {
+        "summary": "Get records under user by id",
+        "tags": ["record"],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "user id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "401": { "$ref": "#/components/responses/Not_authorized" },
+          "403": { "$ref": "#/components/responses/Not_allowed" },
+          "404": { "$ref": "#/components/responses/Not_found" },
+          "200": {
+            "description": "Successfully found records.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "string" },
+                    "household": { "$ref": "#/components/schemas/Record" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/record/user/email/{email}": {
+      "get": {
+        "summary": "Get records under user by email",
+        "tags": ["record"],
+        "parameters": [
+          {
+            "name": "email",
+            "description": "user email",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "email"
+            }
+          }
+        ],
+        "responses": {
+          "401": { "$ref": "#/components/responses/Not_authorized" },
+          "403": { "$ref": "#/components/responses/Not_allowed" },
+          "404": { "$ref": "#/components/responses/Not_found" },
+          "200": {
+            "description": "Successfully found records.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "string" },
+                    "household": { "$ref": "#/components/schemas/Record" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/record/household/id/{id}": {
+      "get": {
+        "summary": "Get records under household by id",
+        "tags": ["record"],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "household id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "401": { "$ref": "#/components/responses/Not_authorized" },
+          "403": { "$ref": "#/components/responses/Not_allowed" },
+          "404": { "$ref": "#/components/responses/Not_found" },
+          "200": {
+            "description": "Successfully found record.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "string" },
+                    "household": { "$ref": "#/components/schemas/Record" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete all records under household by id",
+        "tags": ["record"],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "household id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "401": { "$ref": "#/components/responses/Not_authorized" },
+          "500": { "$ref": "#/components/responses/Internal_error" },
+          "403": { "$ref": "#/components/responses/Not_allowed" },
+          "404": { "$ref": "#/components/responses/Not_found" },
+          "201": {
+            "description": "Successfully deleted all records under household!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/record/relative": {
+      "put": {
+        "summary": "create new record with relationship",
+        "tags": ["record"],
+        "parameters": [
+          {
+            "name": "userId",
+            "description": "User id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "relationship",
+            "description": "Household member's relationship to user",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Relationship"
+            }
+          },
+          {
+            "name": "householdId",
+            "description": "Household member's household id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "firstName",
+            "description": "Household member's first name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "lastName",
+            "description": "Household member's last name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dob",
+            "description": "Household member's date of birth",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "01/01/2001",
+              "format": "date",
+              "pattern": "MM/dd/yyyy"
+            }
+          },
+          {
+            "name": "gender",
+            "description": "Household member's gender",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Gender"
+            }
+          },
+          {
+            "name": "telephone",
+            "description": "Household member's telephone",
+            "in": "path",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "hispanic",
+            "description": "Is household member hispanic?",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Hispanic"
+            }
+          },
+          {
+            "name": "hispanicOther",
+            "description": "Is household member hispanic value is 'OTHER' then please specify",
+            "in": "path",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "race",
+            "description": "Household member's race",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Race"
+            }
+          },
+          {
+            "name": "raceOther",
+            "description": "Is household member race value is 'OTHER' then please specify",
+            "in": "path",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "otherStay",
+            "description": "Does household member has other stay?",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/OtherStay"
+            }
+          }
+        ],
+        "responses": {
+          "401": { "$ref": "#/components/responses/Not_authorized" },
+          "403": { "$ref": "#/components/responses/Not_allowed" },
+          "404": { "$ref": "#/components/responses/Not_found" },
+          "500": { "$ref": "#/components/responses/Internal_error" },
+          "201": {
+            "description": "Successfully saved new record with relationship",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "string" },
+                    "household": {
+                      "$ref": "#/components/schemas/RecordWithRelationship"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "update record with relationship",
+        "tags": ["record"],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Record id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "userId",
+            "description": "User id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "relationship",
+            "description": "Household member's relationship to user",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Relationship"
+            }
+          },
+          {
+            "name": "householdId",
+            "description": "Household member's household id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "firstName",
+            "description": "Household member's first name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "lastName",
+            "description": "Household member's last name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dob",
+            "description": "Household member's date of birth",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "01/01/2001",
+              "format": "date",
+              "pattern": "MM/dd/yyyy"
+            }
+          },
+          {
+            "name": "gender",
+            "description": "Household member's gender",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Gender"
+            }
+          },
+          {
+            "name": "telephone",
+            "description": "Household member's telephone",
+            "in": "path",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "hispanic",
+            "description": "Is household member hispanic?",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Hispanic"
+            }
+          },
+          {
+            "name": "hispanicOther",
+            "description": "Is household member hispanic value is 'OTHER' then please specify",
+            "in": "path",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "race",
+            "description": "Household member's race",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Race"
+            }
+          },
+          {
+            "name": "raceOther",
+            "description": "Is household member race value is 'OTHER' then please specify",
+            "in": "path",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "otherStay",
+            "description": "Does household member has other stay?",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/OtherStay"
+            }
+          }
+        ],
+        "responses": {
+          "401": { "$ref": "#/components/responses/Not_authorized" },
+          "403": { "$ref": "#/components/responses/Not_allowed" },
+          "404": { "$ref": "#/components/responses/Not_found" },
+          "500": { "$ref": "#/components/responses/Internal_error" },
+          "201": {
+            "description": "Successfully updated record with relationship",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "string" },
+                    "household": {
+                      "$ref": "#/components/schemas/RecordWithRelationship"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/record/relative/user": {
+      "get": {
+        "summary": "Get records with relationship under users by query parameters",
+        "tags": ["record"],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "user id",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "email",
+            "description": "user email",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "email"
+            }
+          }
+        ],
+        "responses": {
+          "401": { "$ref": "#/components/responses/Not_authorized" },
+          "403": { "$ref": "#/components/responses/Not_allowed" },
+          "404": { "$ref": "#/components/responses/Not_found" },
+          "200": {
+            "description": "Successfully found records with relationship.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "string" },
+                    "household": {
+                      "$ref": "#/components/schemas/RecordWithRelationship"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/record/relative/user/id/{id}": {
+      "get": {
+        "summary": "Get records with relationship under user by id",
+        "tags": ["record"],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "user id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "401": { "$ref": "#/components/responses/Not_authorized" },
+          "403": { "$ref": "#/components/responses/Not_allowed" },
+          "404": { "$ref": "#/components/responses/Not_found" },
+          "200": {
+            "description": "Successfully found records.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "string" },
+                    "household": {
+                      "$ref": "#/components/schemas/RecordWithRelationship"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/record/relative/user/email/{email}": {
+      "get": {
+        "summary": "Get records with relationship under user by email",
+        "tags": ["record"],
+        "parameters": [
+          {
+            "name": "email",
+            "description": "user email",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "email"
+            }
+          }
+        ],
+        "responses": {
+          "401": { "$ref": "#/components/responses/Not_authorized" },
+          "403": { "$ref": "#/components/responses/Not_allowed" },
+          "404": { "$ref": "#/components/responses/Not_found" },
+          "200": {
+            "description": "Successfully found records.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "string" },
+                    "household": {
+                      "$ref": "#/components/schemas/RecordWithRelationship"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -857,17 +1811,9 @@
       "User": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "name": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string",
-            "format": "email"
-          },
+          "id": { "type": "integer", "format": "int32" },
+          "name": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
           "role": {
             "$ref": "#/components/schemas/Role"
           },
@@ -982,6 +1928,110 @@
           "WI",
           "WY"
         ]
+      },
+      "Gender": {
+        "type": "string",
+        "enum": ["MALE", "FEMALE"]
+      },
+      "Hispanic": {
+        "type": "string",
+        "enum": ["NO", "MEXICAN", "PUERTO_RICAN", "CUBAN", "OTHER", "NO_ANSWER"]
+      },
+      "Race": {
+        "type": "string",
+        "enum": [
+          "WHITE",
+          "BLACK",
+          "CHINESE",
+          "FILIPINO",
+          "ASIAN_INDIAN",
+          "VIETNAMESE",
+          "KOREAN",
+          "JAPANESE",
+          "OTHER_ASIAN",
+          "NATIVE_HAWAIIAN",
+          "SAMOAN",
+          "CHAMORRO",
+          "OTHER_PACIFIC",
+          "OTHER",
+          "NO_ANSWER"
+        ]
+      },
+      "OtherStay": {
+        "type": "string",
+        "enum": [
+          "NO",
+          "COLLEGE",
+          "MILITARY_ASSIGNMENT",
+          "JOB_OR_BUSINESS",
+          "NURSING_HOME",
+          "WITH_PARENT_OR_OTHER_RELATIVE",
+          "SEASONAL_OR_SECOND_RESIDENT",
+          "JAIL_OR_PRISON",
+          "OTHER"
+        ]
+      },
+      "Record": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "number" },
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" },
+          "dob": {
+            "type": "string",
+            "example": "01/01/2001",
+            "format": "date",
+            "pattern": "MM/dd/yyyy"
+          },
+          "gender": { "type": "string" },
+          "telephone": {
+            "oneOf": [{ "type": "number" }, { "type": "null" }]
+          },
+          "householdId": { "type": "number" },
+          "hispanic": { "$ref": "#/components/schemas/Hispanic" },
+          "hispanicOther": {
+            "oneOf": [{ "type": "string" }, { "type": "null" }]
+          },
+          "race": { "$ref": "#/components/schemas/Race" },
+          "raceOther": {
+            "oneOf": [{ "type": "string" }, { "type": "null" }]
+          },
+          "otherStay": { "$ref": "#/components/schemas/OtherStay" }
+        }
+      },
+      "Relationship": {
+        "type": "string",
+        "enum": [
+          "SELF",
+          "SPOUSE",
+          "PARTNER",
+          "BIOLOGICAL_CHILD",
+          "ADOPTED_CHILD",
+          "STEP_CHILD",
+          "COSINE",
+          "PARENT",
+          "GRANDCHILD",
+          "GRANDPARENT",
+          "OTHER_RELATIVE",
+          "OTHER_NON_RELATIVE",
+          "ROOMMATE_HOUSEMATE"
+        ]
+      },
+      "Relative": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "number" },
+          "userId": { "type": "number" },
+          "relationship": { "$ref": "#/components/schemas/Relationship" },
+          "recordid": { "type": "number" }
+        }
+      },
+      "RecordWithRelationship": {
+        "type": "object",
+        "properties": {
+          "relative": { "$ref": "#/components/schemas/Relative" },
+          "record": { "$ref": "#/components/schemas/Record" }
+        }
       }
     },
     "responses": {
@@ -1084,6 +2134,10 @@
     {
       "name": "household",
       "description": "Manage household"
+    },
+    {
+      "name": "record",
+      "description": "Manage records"
     }
   ],
   "security": [{ "basicAuth": [] }]
