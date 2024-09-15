@@ -135,11 +135,16 @@ export const saveRecord = async (
   const authUser: AuthUser | null = await getAuthUser();
   if (!authUser) return { error: "your session expired. please log in", code: 401 };
 
-  const result1 = await dbGetUsersByHouseholdId(householdId);
-  console.log(result1);
-  const user: User | undefined = result1.users?.find((u) => u.id == parseInt(authUser.id as string));
-  console.log(user);
-  if (!user && authUser.role != "ADMIN") return { error: "You don't have permission to save record under someone's household.", code: 401 };
+  if (authUser.role != "ADMIN") {
+    const result1 = await dbGetUsersByHouseholdId(householdId);
+    console.log(result1);
+    const user: User | undefined = result1.users?.find((u) => u.id == parseInt(authUser.id as string));
+    console.log(user);
+    if (!user) return { error: "You don't have permission to save record under someone's household.", code: 401 };
+  } else {
+    const result2 = await dbGetHouseholdById(householdId);
+    if (!result2.household) return { error: `Household by id '${householdId}' doesn't exist.`, code: 404 };
+  }
 
   const { record, db_error } = await dbSaveRecord({
     firstName,
