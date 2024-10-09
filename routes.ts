@@ -3,7 +3,12 @@
  * These routes do not require authentication
  * @type {string[]}
  */
-export const publicRoutes: string[] = ["/", "/api/hello", "/api/auth/providers", "/documentation"];
+export const publicRoutes: string[] = [
+  "/",
+  "/api/hello",
+  "/api/auth/providers",
+  "/documentation",
+];
 
 /**
  * The prefix for UI authentication routes
@@ -14,13 +19,6 @@ export const publicRoutes: string[] = ["/", "/api/hello", "/api/auth/providers",
 export const uiAuthPrefix: string = "/auth";
 
 /**
- * The prefix for API authentication routes
- * Routes that start with this prefix are used for API authentication purposes
- * @type {string}
- */
-export const apiAuthPrefix: string = "/api/auth";
-
-/**
  * The default redirect path after logging in
  * @type {string}
  */
@@ -28,8 +26,22 @@ export const DEFAULT_LOGIN_REDIRECT: string = "/dashboard";
 // export const DEFAULT_LOGIN_REDIRECT: string = "/profile";
 
 /**
+ * The prefix for API routes
+ * Routes that start with this prefix are used for API purposes
+ * @type {string}
+ */
+export const apiPrefix: string = "/api";
+
+/**
+ * The prefix for API authentication routes
+ * Routes that start with this prefix are used for API authentication purposes
+ * @type {string}
+ */
+export const apiAuthPrefix: string = "/api/auth";
+
+/**
  * The prefix for REST API routes
  * Routes that start with this prefix are used for REST API purposes
  * @type {string[]}
  */
-export const apiSecuredRoutes: string[] = ["/api/users"];
+export const apiSecuredRoutes: string[] = ["/api/user"];

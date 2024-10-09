@@ -2,6 +2,8 @@
 
 ## Content
 
+- [Create macvlan network](#create-macvlan-network)
+- [Deploy postgres database](#deploy-postgres-database)
 - [Deploy server container](#deploy-server-container)
 - [Add user in Debian](#add-user-in-debian)
 - [Add user to the sudo group](#add-user-to-the-sudo-group)
@@ -12,11 +14,67 @@
 - [Installing other required apps](#installing-other-required-apps)
 - [pm2 ecosystem](#pm2-ecosystem)
 
+## Create macvlan network
+
+[Content](#content)
+
+:shipit: In order to have our services running as if they connected to our local area network we need to deploy then in macvlan network. this way we will be able to add known hosts and set static ip addresses in our router/local proxy. More info can be found [here.](https://docs.docker.com/engine/network/drivers/macvlan/)
+
+First we need to identify name of physical interface (the ethernet port of your remote server). Please run command on your remote terminal:
+
+```bash
+find /sys/class/net -type l -not -lname '*virtual*' -printf '%f\n'
+```
+
+![physical interfaces](list_nic_interfaces.png)
+As you can see in this screenshot there are 2 physical interfaces `wlp4s0` and `eno1` on my remote server. Your server can have different interfaces. `wlp4s0` is most likely a WiFi interface and `eno1` is Ethernet port. As I have my remote server set to Ethernet cables I will use `eno1` in my macvlan setup. I know my router address in `192.168.0.1` and it's my [DHCP](https://en.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol) server.
+
+:shipit: On you remote terminal please run command:
+
+```bash
+docker network create -d macvlan \
+  --subnet=192.168.1.0/24 \
+  --gateway=192.168.1.1 \
+  -o parent=eno1 \
+  -o macvlan_mode=bridge \
+  macvlan-net
+```
+
+## Deploy postgres database
+
+[Content](#content)
+
+:shipit: My remote server hostname is `hp`. Since I might have multiple servers in my local network under same router/proxy I could have same app instantiated in multiple servers. So to avoid duplicated app hostname I will add `-hp` to my services. For example my postgres database will have hostname `postgres-hp`, `census-app-hp`. And postgres in `lenovo` server will bane hostname `postgres-lenovo` ext. You will have to modify all terminal command to match your situation.
+
+As we are deploying this containers in `macvlan` network they will need to have IP addresses assigned. Because we will add this container hostname to list of known hosts to our router/proxy so we will be able just type server name in our browser URL.
+
+```bash
+docker run -d --name postgres-hp -h postgres-hp \
+  --restart=on-failure \
+  --network macvlan-net \
+  --ip 192.168.1.2 \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_DB=census_app \
+  -v postgres:/var/lib/postgresql/data \
+  postgres:latest
+```
+
 ## Deploy server container
 
 [Content](#content)
 
-TO-DO
+```bash
+docker run -t -d --name census-app-hp -h census-app-hp \
+  --restart=on-failure \
+  --network macvlan-net \
+  --ip 192.168.1.3 \
+  debian:latest
+
+docker exec -it census-app-hp /bin/bash
+```
+
+Please keep terminal running, as it's currently attached to debian container, for next steps.
 
 ## Add user in Debian
 
@@ -76,33 +134,6 @@ When removing a user account with userdel, the user’s home directory and mail 
 
 ```bash
 deluser --remove-home leah
-```
-
-## Generate ssh key:
-
-[Content](#content)
-
-```bash
-ssh-keygen -t ed25519 -b 4096 -C "your_email@example.com"
-```
-
-this will generate 2 files in your `/home/your_user_name_directory/.ssh/`
-
-- `id_ed25519` is your private key. Meant to be saved where it is now.
-- `id_ed25519.pub` is your public key. Meant to be shared to remote host
-  Don't share your public key to untrusted places
-  This public key can be saved in github https://github.com/settings/keys
-
-To save ssh public key to remote server (linux container)
-
-```bash
-ssh-copy-id user@hostname
-```
-
-Enter password and key will be copied to remote server. Now you can connect to server without asked for password
-
-```bash
-ssh user@hostname
 ```
 
 ## Enable SSH on Debian
@@ -190,6 +221,33 @@ Host census-app
 
 Then click `CONTROL + X`, then click `Y` and `ENTER`. This commands will save config file.
 
+## Generate ssh key:
+
+[Content](#content)
+
+```bash
+ssh-keygen -t ed25519 -b 4096 -C "your_email@example.com"
+```
+
+this will generate 2 files in your `/home/your_user_name_directory/.ssh/`
+
+- `id_ed25519` is your private key. Meant to be saved where it is now.
+- `id_ed25519.pub` is your public key. Meant to be shared to remote host
+  Don't share your public key to untrusted places
+  This public key can be saved in github https://github.com/settings/keys
+
+To save ssh public key to remote server (linux container)
+
+```bash
+ssh-copy-id user@hostname
+```
+
+Enter password and key will be copied to remote server. Now you can connect to server without asked for password
+
+```bash
+ssh user@hostname
+```
+
 ## Installing other required apps
 
 [Content](#content)
@@ -197,7 +255,7 @@ Then click `CONTROL + X`, then click `Y` and `ENTER`. This commands will save co
 Please run command all of this commands on remote server:
 
 ```bash
-sudo apt update && apt install -y curl mc nano git nginx
+sudo apt update && sudo apt install -y curl mc nano git nginx
 ```
 
 We need to save some configuration for nginx. Run command:
@@ -335,7 +393,8 @@ module.exports = {
       "pre-setup": "",
       "post-setup": "cp ~/.env* .",
       "pre-deploy-local": "",
-      "post-deploy": "source ~/.nvm/nvm.sh && npm install && npx prisma db push && npm run build && pm2 reload ecosystem.config.js --env production",
+      "post-deploy":
+        "source ~/.nvm/nvm.sh && npm install && npx prisma db push && npm run build && pm2 reload ecosystem.config.js --env production",
     },
   },
 };

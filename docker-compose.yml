@@ -10,7 +10,7 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=census-app
+      - POSTGRES_DB=census_app
     volumes:
       - postgres-data:/var/lib/postgresql/data/
 
