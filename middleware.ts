@@ -1,26 +1,43 @@
 // const { auth } = NextAuth(authConfig);
 import { auth } from "@/auth";
-import { DEFAULT_LOGIN_REDIRECT, apiAuthPrefix, uiAuthPrefix, publicRoutes, apiSecuredRoutes } from "@/routes";
-import { NextResponse } from "next/server";
+import {
+  DEFAULT_LOGIN_REDIRECT,
+  // apiAuthPrefix,
+  uiAuthPrefix,
+  publicRoutes,
+  // apiSecuredRoutes,
+  apiPrefix,
+} from "@/routes";
+// import { NextResponse } from "next/server";
 
 export default auth((req): void | Response | Promise<void | Response> => {
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
 
-  const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
   const isUiAuthRoute = nextUrl.pathname.startsWith(uiAuthPrefix);
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
-  const isApiSecuredRoute = apiSecuredRoutes.some((p) => nextUrl.pathname.includes(p));
+  const isApiRoute = nextUrl.pathname.startsWith(apiPrefix);
+  // const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
+  // const isApiSecuredRoute = apiSecuredRoutes.some((p) =>
+  //   nextUrl.pathname.includes(p),
+  // );
 
-  if (isApiAuthRoute) return;
+  if (isApiRoute) return;
 
-  if (isApiSecuredRoute && !isPublicRoute) {
-    if (!isLoggedIn) return NextResponse.json({ error: "Your token has expired or you aren't logged in!" }, { status: 401 });
-    return;
-  }
+  // if (isApiAuthRoute) return;
+
+  // if (isApiSecuredRoute && !isPublicRoute) {
+  //   if (!isLoggedIn)
+  //     return NextResponse.json(
+  //       { error: "Your token has expired or you aren't logged in!" },
+  //       { status: 401 },
+  //     );
+  //   return;
+  // }
 
   if (isUiAuthRoute) {
-    if (isLoggedIn) return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
+    if (isLoggedIn)
+      return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
     return;
   }
 
