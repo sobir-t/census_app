@@ -21,14 +21,19 @@ interface DeleteRecordAlertDialogProps {
   setEditRecordDialogOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export function DeleteRecordAlertDialog({ recordWithRelationship, setEditRecordDialogOpen }: DeleteRecordAlertDialogProps) {
+export function DeleteRecordAlertDialog({
+  recordWithRelationship,
+  setEditRecordDialogOpen,
+}: DeleteRecordAlertDialogProps) {
   const [error, setError] = useState<string | undefined>(undefined);
   const [success, setSuccess] = useState<string | undefined>(undefined);
 
   const recordDeleteHandler = () => {
     if (recordWithRelationship.relative?.relationship == "SELF") {
       setSuccess(undefined);
-      setError("Deleting SELF record is prohibited. You can only edit SELF record.");
+      setError(
+        "Deleting SELF record is prohibited. You can only edit SELF record.",
+      );
     } else
       deleteRecordById(recordWithRelationship.record.id).then((data) => {
         if (data.error) setError(data.error);
@@ -48,7 +53,7 @@ export function DeleteRecordAlertDialog({ recordWithRelationship, setEditRecordD
           variant="link"
           name="delete-record-button btn"
           type="button"
-          size="tight"
+          size="icon"
           onClick={() => {
             setEditRecordDialogOpen(true);
           }}
@@ -60,7 +65,8 @@ export function DeleteRecordAlertDialog({ recordWithRelationship, setEditRecordD
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete record for {recordWithRelationship.record.firstName}
+            This action cannot be undone. This will permanently delete record
+            for {recordWithRelationship.record.firstName}
             {recordWithRelationship.record.lastName} data from our servers.
           </AlertDialogDescription>
         </AlertDialogHeader>
@@ -68,7 +74,11 @@ export function DeleteRecordAlertDialog({ recordWithRelationship, setEditRecordD
         <FormSuccess message={success} />
         <AlertDialogFooter>
           <AlertDialogCancel>{success ? "OK" : "Cancel"}</AlertDialogCancel>
-          <Button variant="destructive" disabled={success != undefined} onClick={recordDeleteHandler}>
+          <Button
+            variant="destructive"
+            disabled={success != undefined}
+            onClick={recordDeleteHandler}
+          >
             Delete
           </Button>
           {/* <AlertDialogAction disabled={success != undefined} onClick={recordDeleteHandler}>

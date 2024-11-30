@@ -4,8 +4,19 @@ import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Lienholder } from "@prisma/client";
 
@@ -16,13 +27,23 @@ interface LienholderComboboxProps {
   setNewLienholderId: Dispatch<SetStateAction<number | null>>;
 }
 
-export default function LienholderCombobox({ lienholders, lienholderId, newLienholderId, setNewLienholderId }: LienholderComboboxProps) {
+export default function LienholderCombobox({
+  lienholders,
+  lienholderId,
+  newLienholderId,
+  setNewLienholderId,
+}: LienholderComboboxProps) {
   const [open, setOpen] = useState(false);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" role="combobox" aria-expanded={open} className="col-span-12 justify-between">
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          className="col-span-12 justify-between"
+        >
           {newLienholderId
             ? lienholders.find((l) => l.id === newLienholderId)?.name
             : lienholderId
@@ -42,12 +63,21 @@ export default function LienholderCombobox({ lienholders, lienholderId, newLienh
                   key={l.id}
                   value={String(l.id)}
                   onSelect={(currentValue) => {
-                    setNewLienholderId(currentValue === String(lienholderId) ? null : parseInt(currentValue));
+                    setNewLienholderId(
+                      currentValue === String(lienholderId)
+                        ? null
+                        : parseInt(currentValue),
+                    );
                     setOpen(false);
                   }}
                 >
                   {l.name}
-                  <CheckIcon className={cn("ml-auto h-4 w-4", lienholderId === l.id ? "opacity-100" : "opacity-0")} />
+                  <CheckIcon
+                    className={cn(
+                      "ml-auto h-4 w-4",
+                      lienholderId === l.id ? "opacity-100" : "opacity-0",
+                    )}
+                  />
                 </CommandItem>
               ))}
             </CommandGroup>
