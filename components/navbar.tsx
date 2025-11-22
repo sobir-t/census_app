@@ -92,7 +92,7 @@ export default function Navbar({ authUser }: { authUser: AuthUser | null }) {
                 <DisclosureButton
                   id="nav-menu-button"
                   data-testid="mobile-navbar"
-                  className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                  className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-white"
                 >
                   <span className="absolute -inset-0.5" />
                   <span className="sr-only">Open main menu</span>
@@ -100,7 +100,7 @@ export default function Navbar({ authUser }: { authUser: AuthUser | null }) {
                 </DisclosureButton>
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                <div className="flex flex-shrink-0 items-center">
+                <div className="flex shrink-0 items-center">
                   <Image className="h-8 w-8 rounded-full" src="/logo.svg" alt="Logo" width="8000" height="8000" data-testid="logo" />
                 </div>
                 <div className="sm:ml-6 sm:block">
@@ -127,7 +127,7 @@ export default function Navbar({ authUser }: { authUser: AuthUser | null }) {
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 <button
                   type="button"
-                  className="notification-button relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                  className="notification-button relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-hidden focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                   data-testid="notification-bell"
                 >
                   <span className="absolute -inset-1.5" />
@@ -140,7 +140,7 @@ export default function Navbar({ authUser }: { authUser: AuthUser | null }) {
                   <div>
                     <MenuButton
                       id="user-menu-button"
-                      className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                      className="relative flex rounded-full bg-gray-800 text-sm focus:outline-hidden focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                       data-testid="avatar-button"
                     >
                       <span className="absolute -inset-1.5" />
@@ -151,7 +151,7 @@ export default function Navbar({ authUser }: { authUser: AuthUser | null }) {
                   </div>
                   <MenuItems
                     transition
-                    className="user-menu-item absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                    className="user-menu-item absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-leave:duration-75 data-enter:ease-out data-leave:ease-in"
                     data-testid="menu-items"
                   >
                     {profile.menuItems.map((item) => (

@@ -32,19 +32,19 @@ export default function RecordsContainer({ authUser }: RecordsContainerProps) {
   return (
     <div className={"records-container w-full mt-4 grid sm:grid-cols-12 gap-2"}>
       {loading ? (
-        <LoadingCard className="loading-record-card sm:col-span-6 p-4 border-b-2 rounded-md shadow hover:bg-slate-100" />
+        <LoadingCard className="loading-record-card sm:col-span-6 p-4 border-b-2 rounded-md shadow-sm hover:bg-slate-100" />
       ) : recordsWithRelationship.length ? (
         <>
           {recordsWithRelationship.map((each, i) => (
             <RecordCard key={i} authUser={authUser} recordWithRelationship={each} setEditRecordDialogOpen={setEditRecordDialogOpen} />
           ))}
-          <div className="add-record-card sm:col-span-6 inline-flex items-start justify-between p-2 border-b-2 rounded-md shadow hover:bg-slate-100">
+          <div className="add-record-card sm:col-span-6 inline-flex items-start justify-between p-2 border-b-2 rounded-md shadow-sm hover:bg-slate-100">
             <p>Do you have anybody else?</p>
             <UpdateRecordDialog authUser={authUser} recordWithRelationship={undefined} setEditRecordDialogOpen={setEditRecordDialogOpen} />
           </div>
         </>
       ) : (
-        <div className="no-records-card sm:col-span-6 inline-flex items-center justify-between p-2 border-b-2 rounded-md shadow hover:bg-slate-100">
+        <div className="no-records-card sm:col-span-6 inline-flex items-center justify-between p-2 border-b-2 rounded-md shadow-sm hover:bg-slate-100">
           <p>You do not have any records yet.</p>
           <UpdateRecordDialog authUser={authUser} recordWithRelationship={undefined} setEditRecordDialogOpen={setEditRecordDialogOpen} />
         </div>

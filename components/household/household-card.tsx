@@ -44,7 +44,7 @@ export default function HouseholdCard({ authUser }: AddressCardProps) {
 
   return (
     <>
-      <div className="address-card p-4 flex flex-col border-b-2 rounded-md shadow hover:bg-slate-100">
+      <div className="address-card p-4 flex flex-col border-b-2 rounded-md shadow-sm hover:bg-slate-100">
         <div className="flex justify-between items-center w-full">
           <p>Household information:</p>
           {!isLoading ? <UpdateHouseholdDialog authUser={authUser} household={household} setEditHouseholdOpen={setEditHouseholdOpen} /> : null}
